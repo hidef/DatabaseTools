@@ -147,9 +147,15 @@ namespace DatabaseTools
         private static string discoverDatabase()
         {
             string projectName = new DirectoryInfo("..").Name;
-            var assemblyName = new FileInfo(Path.Combine("bin", projectName, "Debug", "netcoreapp1.1", projectName + ".dll")).FullName;
+            string path = Path.Combine("bin", projectName, "Debug", "netcoreapp1.1", projectName + ".dll");
+            var assemblyName = new FileInfo(path);
 
-            var myAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyName);
+            if ( !assemblyName.Exists ) {
+                Console.WriteLine($"Unable to load assembly: {assemblyName.FullName} - {path}");
+                throw new Exception();
+            }
+
+            var myAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyName.FullName);
 
             return myAssembly
                 .GetTypes()
