@@ -147,7 +147,7 @@ namespace DatabaseTools
         private static string discoverDatabase()
         {
             string projectName = new DirectoryInfo(".").Name;
-            string path = Path.Combine("bin", projectName, "Debug", "netcoreapp1.1", projectName + ".dll");
+            string path = Path.Combine("bin", "Debug", "netcoreapp1.1", projectName + ".dll");
             var assemblyName = new FileInfo(path);
 
             if ( !assemblyName.Exists ) {
