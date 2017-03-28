@@ -4,7 +4,7 @@ var globalJson = fs.readFileSync('global.json');
 var globalConfig = JSON.parse(globalJson);
 
 globalConfig.projects.map(function(project) {
-    console.log('Patching:', project);
+    console.log('Patching:', project, 'to', process.env.APPVEYOR_BUILD_VERSION);
     var projectJson = fs.readFileSync(project + '/project.json');
     var projectConfig = JSON.parse(projectJson);
     projectConfig.version = process.env.APPVEYOR_BUILD_VERSION;
