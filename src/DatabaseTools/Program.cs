@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Runtime.Loader;
 
 namespace DatabaseTools
 {
@@ -118,6 +121,10 @@ namespace DatabaseTools
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "from", discoverDatabase() }
+                })
+                .AddCommandLine(args)
                 .AddJsonFile("appsettings.json");
 
             var configuration = builder.Build();
@@ -135,6 +142,20 @@ namespace DatabaseTools
             
             destination.Apply(diff);
 
+        }
+
+        private static string discoverDatabase()
+        {
+            string projectName = new DirectoryInfo("..").Name;
+            var assemblyName = new FileInfo(Path.Combine("bin", projectName, "Debug", "netcoreapp1.1", projectName + ".dll")).FullName;
+
+            var myAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyName);
+
+            return myAssembly
+                .GetTypes()
+                .Where(t => t.GetTypeInfo().GetCustomAttributes().Any(a => a is DatabaseAttribute))
+                .Single()
+                .Name;
         }
 
         private static DbDiff Diff(IDb source, IDb destination)
