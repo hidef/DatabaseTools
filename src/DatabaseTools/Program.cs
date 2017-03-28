@@ -147,7 +147,7 @@ namespace DatabaseTools
         private static string discoverDatabase()
         {
             string projectName = new DirectoryInfo(".").Name;
-            string path = Path.Combine("bin", "Debug", "netcoreapp1.1", projectName + ".dll");
+            string path = Path.Combine("bin", "Debug", "netcoreapp1.0", projectName + ".dll");
             var assemblyName = new FileInfo(path);
 
             if ( !assemblyName.Exists ) {
@@ -157,11 +157,7 @@ namespace DatabaseTools
 
             var myAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyName.FullName);
 
-            return myAssembly
-                .GetTypes()
-                .Where(t => t.GetTypeInfo().GetCustomAttributes().Any(a => a is DatabaseAttribute))
-                .Single()
-                .Name;
+            return myAssembly.GetType($"{myAssembly.FullName.Split(',')[0]}.Database").AssemblyQualifiedName;
         }
 
         private static DbDiff Diff(IDb source, IDb destination)
