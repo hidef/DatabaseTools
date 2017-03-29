@@ -218,6 +218,8 @@ namespace DatabaseTools
 
         private static IDb GetSource(string connectionString)
         {
+            Console.WriteLine($"Loading: {connectionString}");
+            
             var type = Type.GetType(connectionString);
             
             if ( type != null ) return new CSharpDbDefiniton(type);
