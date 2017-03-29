@@ -110,7 +110,7 @@ namespace DatabaseTools
             Tuple.Create("time","DateTime"),
             Tuple.Create("timetz","DateTime"),
             Tuple.Create("timestamp","DateTime"),
-            Tuple.Create("timestamptz","DateTime"),
+            Tuple.Create("timestamptz","DateTime"), 
             Tuple.Create("interval","TimeSpan"),
             Tuple.Create("varchar","String"),
             Tuple.Create("inet","IPAddress"),
@@ -150,7 +150,7 @@ namespace DatabaseTools
         {
             string projectName = new DirectoryInfo(".").Name;
             string path = Path.Combine("bin", "Debug", "netcoreapp1.0", projectName + ".dll");
-            path = "/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/bin/Debug/netcoreapp1.1/TacticsForeverAPI.dll";
+            
             var assemblyName = new FileInfo(path);
 
             if ( !assemblyName.Exists ) {
@@ -200,6 +200,7 @@ namespace DatabaseTools
 
             return coexistingTables
                 .Select(t => new TableModification(t.In, t.Out) { Name = t.In.Name})
+                .Where(tm => tm.Added.Count() + tm.Changes.Count() + tm.Removed.Count() > 0)
                 .ToList();
         }
 
