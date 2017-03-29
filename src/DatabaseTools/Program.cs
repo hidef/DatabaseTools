@@ -23,6 +23,7 @@ namespace DatabaseTools
             Tuple.Create("TINYINT UNSIGNED NOT NULL","byte"),
             Tuple.Create("TINYINT UNSIGNED NULL","byte?"),
             Tuple.Create("TINYINT UNSIGNED","byte"),
+            Tuple.Create("TINYINT(1)","byte"),
             Tuple.Create("SMALLINT NOT NULL","short"),
             Tuple.Create("SMALLINT NULL","short?"),
             Tuple.Create("SMALLINT","short"),
@@ -56,38 +57,39 @@ namespace DatabaseTools
             Tuple.Create("VARCHAR(50) NOT NULL","string"),
             Tuple.Create("VARCHAR(50) NULL","string"),
             Tuple.Create("VARCHAR(50)","string"),
-            Tuple.Create("DATETIME NOT NULL","DateTime"),
-            Tuple.Create("DATETIME NULL","DateTime?"),
-            Tuple.Create("DATETIME","DateTime"),
-            Tuple.Create("BLOB","Byte[]"),
+            Tuple.Create("MEDIUMTEXT","string"),
+            Tuple.Create("DATETIME NOT NULL","datetime"),
+            Tuple.Create("DATETIME NULL","datetime?"),
+            Tuple.Create("DATETIME","datetime"),
+            Tuple.Create("BLOB","byte[]"),
             Tuple.Create("TEXT", "string")
         };
 
         public static IEnumerable<Tuple<string, string>> CSharpMappings = new [] {
-            Tuple.Create("Int64","Int64"),
-            Tuple.Create("Long","Long"),
-            Tuple.Create("Boolean","Boolean"),
-            Tuple.Create("Byte[]","Byte[]"),
-            Tuple.Create("DateTime","DateTime"),
-            Tuple.Create("Double","Double"),
-            Tuple.Create("Int32","Int32"),
-            Tuple.Create("Int","Int"),
-            Tuple.Create("Decimal","Decimal"),
-            Tuple.Create("Decimal","Decimal"),
-            Tuple.Create("Single","Single"),
-            Tuple.Create("Int16","Int16"),
-            Tuple.Create("Short","Short"),
-            Tuple.Create("String","String"),
-            Tuple.Create("DateTime","DateTime"),
-            Tuple.Create("DateTime","DateTime"),
-            Tuple.Create("DateTime","DateTime"),
-            Tuple.Create("DateTime","DateTime"),
-            Tuple.Create("TimeSpan","TimeSpan"),
-            Tuple.Create("String","String"),
-            Tuple.Create("IPAddress","IPAddress"),
-            Tuple.Create("Boolean","Boolean"),
-            Tuple.Create("Guid","Guid"),
-            Tuple.Create("Array","Array")
+            Tuple.Create("Int64","int64"),
+            Tuple.Create("Long","long"),
+            Tuple.Create("Boolean","boolean"),
+            Tuple.Create("Byte[]","byte[]"),
+            Tuple.Create("DateTime","datetime"),
+            Tuple.Create("Double","double"),
+            Tuple.Create("Int32","int32"),
+            Tuple.Create("Int","int"),
+            Tuple.Create("Decimal","decimal"),
+            Tuple.Create("Decimal","decimal"),
+            Tuple.Create("Single","single"),
+            Tuple.Create("Int16","int16"),
+            Tuple.Create("Short","short"),
+            Tuple.Create("String","string"),
+            Tuple.Create("DateTime","datetime"),
+            Tuple.Create("DateTime","datetime"),
+            Tuple.Create("DateTime","datetime"),
+            Tuple.Create("DateTime","datetime"),
+            Tuple.Create("TimeSpan","timespan"),
+            Tuple.Create("String","string"),
+            Tuple.Create("IPAddress","ipaddress"),
+            Tuple.Create("Boolean","boolean"),
+            Tuple.Create("Guid","guid"),
+            Tuple.Create("Array","array")
         };
 
         public static IEnumerable<Tuple<string, string>> PostGresMappings = new [] {
@@ -148,6 +150,7 @@ namespace DatabaseTools
         {
             string projectName = new DirectoryInfo(".").Name;
             string path = Path.Combine("bin", "Debug", "netcoreapp1.0", projectName + ".dll");
+            path = "/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/bin/Debug/netcoreapp1.1/TacticsForeverAPI.dll";
             var assemblyName = new FileInfo(path);
 
             if ( !assemblyName.Exists ) {
