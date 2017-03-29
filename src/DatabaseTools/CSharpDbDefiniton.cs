@@ -29,11 +29,22 @@ namespace DatabaseTools
                             .GetProperties()
                             .Select(p => new Field {
                                 Name = p.Name,
-                                Type = p.PropertyType.Name,
+                                Type = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ? null : findType(p.PropertyType.Name),
                                 Ignored = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute)
                             })
                     });
             }
+        }
+
+        private string findType(string type)
+        {
+            var matchedMapping = Program.CSharpMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
+
+            if ( matchedMapping == null ) 
+            {
+                throw new Exception();
+            }
+            return matchedMapping.Item2;
         }
 
         public void Apply(DbDiff diff)
