@@ -96,6 +96,21 @@ namespace DatabaseTools
                 builder.AppendLine();
             }
 
+            foreach (TableModification mod in diff.ModifiedTables )
+            {
+                foreach (Field added in mod.Added){                    
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD COLUMN {added.Name} {getDbType(added.Type)};");
+                }
+                
+                foreach (ColumnModification colMod in mod.Changes){
+                    builder.AppendLine($"ALTER TABLE {mod.Name} MODIFY COLUMN {colMod.A.Name} {getDbType(colMod.B.Type)};");
+                }
+
+                foreach (Field removed in mod.Removed){
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP COLUMN {removed.Name};");
+                }
+            }
+
             foreach (Table table in diff.RemovedTables) {
                 builder.AppendLine($"DROP TABLE {table.Name};");
                 builder.AppendLine();
