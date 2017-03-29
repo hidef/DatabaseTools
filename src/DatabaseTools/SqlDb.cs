@@ -103,7 +103,7 @@ namespace DatabaseTools
                 }
                 
                 foreach (ColumnModification colMod in mod.Changes){
-                    builder.AppendLine($"ALTER TABLE {mod.Name} MODIFY COLUMN {colMod.A.Name} {getDbType(colMod.B.Type)};");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} MODIFY COLUMN {colMod.B.Name} {getDbType(colMod.A.Type)};");
                 }
 
                 foreach (Field removed in mod.Removed){
