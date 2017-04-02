@@ -130,6 +130,8 @@ namespace DatabaseTools
                 .AddJsonFile("appsettings.json");
 
             var configuration = builder.Build();
+
+            configuration.AsEnumerable().Select(kvp => { Console.WriteLine($"{kvp.Key} => {kvp.Value}"); return kvp; }).ToArray();
             
             IDb source = GetSource(configuration["from"]);
             IDb destination = GetSource(configuration["to"]);
@@ -218,6 +220,8 @@ namespace DatabaseTools
 
         private static IDb GetSource(string connectionString)
         {
+            if ( string.IsNullOrEmpty(connectionString) ) throw new ArgumentNullException(nameof(connectionString));
+
             Console.WriteLine($"Loading: {connectionString}");
             
             var type = Type.GetType(connectionString);
