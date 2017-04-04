@@ -123,6 +123,7 @@ namespace DatabaseTools
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables()
                 .AddInMemoryCollection(new Dictionary<string, string> {
                     { "from", discoverDatabase() }
                 })
@@ -131,8 +132,6 @@ namespace DatabaseTools
 
             var configuration = builder.Build();
 
-            configuration.AsEnumerable().Select(kvp => { Console.WriteLine($"{kvp.Key} => {kvp.Value}"); return kvp; }).ToArray();
-            
             IDb source = GetSource(configuration["from"]);
             IDb destination = GetSource(configuration["to"]);
             
