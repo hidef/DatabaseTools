@@ -6,3 +6,7 @@ build_script:
     dotnet pack src/DatabaseTools
 artifacts:
 - path: '**/*.nupkg'
+assembly_info:
+  patch: true
+  assembly_version: '{version}'
+  file: '**\AssemblyInfo.cs'
