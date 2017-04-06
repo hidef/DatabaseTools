@@ -4,8 +4,9 @@ using System.Data;
 using System.Linq;
 using System;
 using System.Text;
+using DatabaseTools.Model;
 
-namespace DatabaseTools.Sources.MySql
+namespace DatabaseTools.Sources.MySQL
 {
     internal class SqlDb : IDb
     {
