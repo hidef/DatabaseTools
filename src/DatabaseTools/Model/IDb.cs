@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DatabaseTools
+namespace DatabaseTools.Model
 {
     public class Table
     {

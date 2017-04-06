@@ -5,7 +5,7 @@ using System.Linq;
 using System;
 using System.Text;
 
-namespace DatabaseTools
+namespace DatabaseTools.Sources.MySql
 {
     internal class SqlDb : IDb
     {

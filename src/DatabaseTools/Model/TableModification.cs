@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DatabaseTools
+namespace DatabaseTools.Model
 {
     public class TableModification
     {

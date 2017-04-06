@@ -1,4 +1,4 @@
-namespace DatabaseTools
+namespace DatabaseTools.Model
 {
     public class Field
     {

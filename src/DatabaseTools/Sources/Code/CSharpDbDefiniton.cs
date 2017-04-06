@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 
-namespace DatabaseTools
+namespace DatabaseTools.Sources.Code
 {
     internal class CSharpDbDefiniton : IDb
     {
