@@ -1,8 +1,7 @@
 version: 1.0.{build}
 build_script:
 - cmd: |
-    node patchversions.js
-    dotnet restore
+    dotnet restore src/DatabaseTools
     dotnet build src/DatabaseTools
     dotnet pack src/DatabaseTools
 artifacts:
