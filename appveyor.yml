@@ -2,7 +2,7 @@ version: 1.0.{build}
 build_script:
 - cmd: |
     dotnet restore src/DatabaseTools
-    dotnet build src/DatabaseTools
+    dotnet build src/DatabaseTools -- /p:Version=$VERSION
     dotnet pack src/DatabaseTools
 artifacts:
 - path: '**/*.nupkg'
