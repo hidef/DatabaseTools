@@ -17,6 +17,23 @@ namespace DatabaseTools.Model
 
         public string Name { get; set; }
 
+        public IEnumerable<ColumnModification> Changes
+        {
+            get {
+                var _in = this.@in.Fields
+                    .Where(t => !t.Ignored)
+                    .ToList();
+                var _out = this.@out.Fields
+                    .Where(t => !t.Ignored)
+                    .ToList(); 
+
+                return _in
+                    .Join(_out, i => i.Name, i => i.Name, (a, b) => new ColumnModification(a, b))
+                    .Where(cMod => cMod.A.Type != cMod.B.Type)
+                    .ToList();
+            }
+        }
+
         public IEnumerable<Field> Added 
         {
             get 
