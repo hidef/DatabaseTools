@@ -11,7 +11,7 @@ namespace DatabaseTools.Sources.Code
 
         }
 
-        public PrimaryKeyAttribute(string[] columns)
+        public PrimaryKeyAttribute(params string[] columns)
         {
             _columns = columns;
         }
