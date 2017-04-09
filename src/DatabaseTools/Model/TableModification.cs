@@ -17,7 +17,7 @@ namespace DatabaseTools.Model
 
         public string Name { get; set; }
 
-        public IEnumerable<ColumnModification> Changes
+        public IEnumerable<ColumnModification> ChangedColumns
         {
             get {
                 var _in = this.@in.Fields
@@ -34,7 +34,7 @@ namespace DatabaseTools.Model
             }
         }
 
-        public IEnumerable<Field> Added 
+        public IEnumerable<Field> AddedColumns
         {
             get 
             {
@@ -48,7 +48,7 @@ namespace DatabaseTools.Model
             }
         }
 
-        public IEnumerable<Field> Removed 
+        public IEnumerable<Field> RemovedColumns
         {
             get 
             {

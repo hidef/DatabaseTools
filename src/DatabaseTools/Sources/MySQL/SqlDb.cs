@@ -99,15 +99,15 @@ namespace DatabaseTools.Sources.MySQL
 
             foreach (TableModification mod in diff.ModifiedTables )
             {
-                foreach (Field added in mod.Added){                    
+                foreach (Field added in mod.AddedColumns){                    
                     builder.AppendLine($"ALTER TABLE {mod.Name} ADD COLUMN {added.Name} {getDbType(added.Type)};");
                 }
                 
-                foreach (ColumnModification colMod in mod.Changes){
+                foreach (ColumnModification colMod in mod.ChangedColumns){
                     builder.AppendLine($"ALTER TABLE {mod.Name} MODIFY COLUMN {colMod.B.Name} {getDbType(colMod.A.Type)};");
                 }
 
-                foreach (Field removed in mod.Removed){
+                foreach (Field removed in mod.RemovedColumns){
                     builder.AppendLine($"ALTER TABLE {mod.Name} DROP COLUMN {removed.Name};");
                 }
             }
