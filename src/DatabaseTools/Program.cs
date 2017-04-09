@@ -129,7 +129,7 @@ namespace DatabaseTools
                     { "from", discoverDatabase() }
                 })
                 .AddCommandLine(args)
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json", true);
 
             var configuration = builder.Build();
 
