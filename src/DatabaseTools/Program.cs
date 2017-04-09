@@ -202,7 +202,7 @@ namespace DatabaseTools
 
             return coexistingTables
                 .Select(t => new TableModification(t.In, t.Out) { Name = t.In.Name})
-                .Where(tm => tm.Added.Count() + tm.Changes.Count() + tm.Removed.Count() > 0)
+                .Where(tm => tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
                 .ToList();
         }
 
