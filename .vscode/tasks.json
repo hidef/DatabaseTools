@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/src/DatabaseTools/project.json"
+                "${workspaceRoot}/src/DatabaseTools/DatabaseTools.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
