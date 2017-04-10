@@ -17,6 +17,62 @@ namespace DatabaseTools.Model
 
         public string Name { get; set; }
 
+        public IEnumerable<Index> AddedIndices 
+        {
+            get {
+                var _in = this.@in.Indices
+                    .Append(this.@in.PrimaryKey)
+                    .Where(i => i != null)
+                    .ToList();
+                var _out = this.@out.Indices
+                    .Append(this.@out.PrimaryKey)
+                    .Where(i => i != null)
+                    .ToList(); 
+
+                return _in
+                    .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<Index> RemovedIndices 
+        {
+            get {
+                var _in = this.@in.Indices
+                    .Append(this.@in.PrimaryKey)
+                    .Where(i => i != null)
+                    .ToList();
+                var _out = this.@out.Indices
+                    .Append(this.@out.PrimaryKey)
+                    .Where(i => i != null)
+                    .ToList(); 
+
+                   
+                return _out
+                    .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+        }
+        
+        public IEnumerable<IndexModification> ChangeIndices 
+        {
+            get {
+                var _in = this.@in.Indices
+                    .Append(this.@in.PrimaryKey)
+                    .Where(i => i != null)
+                    .ToList();
+                var _out = this.@out.Indices
+                    .Append(this.@out.PrimaryKey)
+                    .Where(i => i != null)
+                    .ToList(); 
+
+                return _in
+                    .Join(_out, i => i.Name, i => i.Name, (a, b) => new IndexModification(a, b))
+                    .Where(iMod => !IndexModification.Equals(iMod.A, iMod.B))
+                    .ToList();
+            }
+        }
+
         public IEnumerable<ColumnModification> ChangedColumns
         {
             get {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using DatabaseTools.Model;
+using System.Reflection;
 
 namespace DatabaseTools.Sources.Code
 {
@@ -21,24 +22,31 @@ namespace DatabaseTools.Sources.Code
                     .type
                     .GetProperties()
                     .Where(t => typeof(ITable<>).ImplementedBy(t.PropertyType))
-                    .Select(t => new Table {
-                        Name = t.Name,
-                        
-                        Fields = t
-                            .PropertyType
-                            .GenericTypeArguments
-                            .Single()
-                            .GetProperties()
-                            .Select(p => new Field {
-                                Name = p.Name,
-                                Type = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ? null : findType(p.PropertyType.Name),
-                                Ignored = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute)
-                            })
-                    })
                     .Select(t => {
-                        t.PrimaryKey = new Index
+                        var table = new Table {
+                            Name = t.Name,
+                            
+                            Fields = t
+                                .PropertyType
+                                .GenericTypeArguments
+                                .Single()
+                                .GetProperties()
+                                .Select(p => new Field {
+                                    Name = p.Name,
+                                    Type = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ? null : findType(p.PropertyType.Name),
+                                    Ignored = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute)
+                                })
+                        };
 
-                        return t;
+                        var pkAttribute = (PrimaryKeyAttribute) t.PropertyType.GenericTypeArguments.Single().GetTypeInfo().GetCustomAttribute(typeof(PrimaryKeyAttribute));
+                        if ( pkAttribute != null ) 
+                        {
+                            table.PrimaryKey = new Index {
+                                Name = "", // TODO
+                                Fields = table.Fields.Where(f => pkAttribute.Columns.Contains(f.Name) )
+                            };
+                        }
+                        return table;
                     });
             }
         }

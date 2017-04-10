@@ -151,7 +151,7 @@ namespace DatabaseTools
 
         private static string discoverDatabase()
         {
-            var projectName = new DirectoryInfo("/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
+            var projectName = new DirectoryInfo("/Users/robert.stiff/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
             string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.0", projectName.Name + ".dll");
             
             var assemblyName = new FileInfo(path);
@@ -203,7 +203,7 @@ namespace DatabaseTools
 
             return coexistingTables
                 .Select(t => new TableModification(t.In, t.Out) { Name = t.In.Name})
-                .Where(tm => tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
+                .Where(tm => tm.AddedIndices.Count() + tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
                 .ToList();
         }
 
