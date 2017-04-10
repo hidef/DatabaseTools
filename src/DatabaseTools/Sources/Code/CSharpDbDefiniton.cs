@@ -23,6 +23,7 @@ namespace DatabaseTools.Sources.Code
                     .Where(t => typeof(ITable<>).ImplementedBy(t.PropertyType))
                     .Select(t => new Table {
                         Name = t.Name,
+                        
                         Fields = t
                             .PropertyType
                             .GenericTypeArguments
@@ -33,6 +34,11 @@ namespace DatabaseTools.Sources.Code
                                 Type = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ? null : findType(p.PropertyType.Name),
                                 Ignored = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute)
                             })
+                    })
+                    .Select(t => {
+                        t.PrimaryKey = new Index
+
+                        return t;
                     });
             }
         }

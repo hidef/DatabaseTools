@@ -122,6 +122,7 @@ namespace DatabaseTools
 
         public static void Main(string[] args)
         {
+            Console.WriteLine("Discovering Database Changes.");
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables()
@@ -144,14 +145,14 @@ namespace DatabaseTools
 
             Console.WriteLine(diffScript);
             
-            destination.Apply(diff);
+            // destination.Apply(diff);
 
         }
 
         private static string discoverDatabase()
         {
-            string projectName = new DirectoryInfo(".").Name;
-            string path = Path.Combine("bin", "Debug", "netcoreapp1.0", projectName + ".dll");
+            var projectName = new DirectoryInfo("/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
+            string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.0", projectName.Name + ".dll");
             
             var assemblyName = new FileInfo(path);
 

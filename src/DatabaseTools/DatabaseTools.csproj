@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.0;netcoreapp1.1</TargetFrameworks>
+    <Version>1.0.31.0</Version>
+    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
     <AssemblyName>dotnet-dbmodel</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>DatabaseTools</PackageId>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.1.1</RuntimeFrameworkVersion>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">1.1.1</RuntimeFrameworkVersion>
+    <RunCommand>bin/Debug/netcoreapp1.1/dotnet-dbmodel.dll</RunCommand>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
