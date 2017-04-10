@@ -122,28 +122,29 @@ namespace DatabaseTools
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("Discovering Database Changes.");
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddEnvironmentVariables()
-                .AddInMemoryCollection(new Dictionary<string, string> {
-                    { "from", discoverDatabase() }
-                })
-                .AddCommandLine(args)
-                .AddJsonFile("appsettings.json", true);
+            // Console.WriteLine("Discovering Database Changes.");
+            // var builder = new ConfigurationBuilder()
+            //     .SetBasePath(Directory.GetCurrentDirectory())
+            //     .AddEnvironmentVariables()
+            //     .AddInMemoryCollection(new Dictionary<string, string> {
+            //         { "from", discoverDatabase() }
+            //     })
+            //     .AddCommandLine(args)
+            //     .AddJsonFile("appsettings.json", true);
 
-            var configuration = builder.Build();
+            // var configuration = builder.Build();
 
-            IDb source = GetSource(configuration["from"]);
-            IDb destination = GetSource(configuration["to"]);
+            // IDb source = GetSource(configuration["from"]);
+            // IDb destination = GetSource(configuration["to"]);
             
-            DbDiff diff = Diff(source, destination);
+            DbDiff diff = StaticExampleDiff();
+            // DbDiff diff = Diff(source, destination);
 
             Console.WriteLine(JsonConvert.SerializeObject(diff, Formatting.Indented));
  
-            string diffScript = destination.GenerateScript(diff);
+            // string diffScript = destination.GenerateScript(diff);
 
-            Console.WriteLine(diffScript);
+            // Console.WriteLine(diffScript);
             
             // destination.Apply(diff);
 
@@ -176,6 +177,78 @@ namespace DatabaseTools
             };          
         }
 
+ 
+        private static DbDiff StaticExampleDiff()
+        {
+            return new DbDiff 
+            {
+                AddedTables = new [] {
+                    new Table {
+                        Name = "Some new Table",
+                        PrimaryKey = new [] { "CategoryId, ProductId" },
+                        Fields = new [] {
+                            new Field {
+                                Name = "CategoryId",
+                                Type = "string"
+                            },
+                            new Field {
+                                Name = "ProductId",
+                                Type = "string"
+                            }
+                        }
+                    }
+                },
+                ModifiedTables = new [] {
+                    new TableModification(
+                        new Table {
+                            Name = "Some existingTable Table",
+                            PrimaryKey = new [] { "ProductId" },
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "Name",
+                                    Type = "string"
+                                }
+                            }
+                        },
+                        new Table {
+                            Name = "Some existingTable Table",
+                            PrimaryKey = new [] { "CategoryId, ProductId" },
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "ProductId",
+                                    Type = "string"
+                                }
+                            }
+                        }
+                    )
+                },
+                RemovedTables = new [] {
+                    new Table {
+                        Name = "Some expired Table",
+                        PrimaryKey = new [] { "CategoryId, ProductId" },
+                        Fields = new [] {
+                            new Field {
+                                Name = "CategoryId",
+                                Type = "string"
+                            },
+                            new Field {
+                                Name = "ProductId",
+                                Type = "string"
+                            }
+                        }
+                    }
+                }
+            };          
+        }
+
         private static IEnumerable<Table> getAddedTables(IDb source, IDb destination)
         {
             var _in = source
@@ -203,7 +276,7 @@ namespace DatabaseTools
 
             return coexistingTables
                 .Select(t => new TableModification(t.In, t.Out) { Name = t.In.Name})
-                .Where(tm => tm.AddedIndices.Count() + tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
+                .Where(tm => /*tm.AddedIndices.Count() +*/ tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
                 .ToList();
         }
 

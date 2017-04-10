@@ -7,9 +7,9 @@ namespace DatabaseTools.Model
     {   
         public string Name { get; set; }
 
-        public bool IsUnique { get; set; }      
+        public bool IsUnique { get; set; }
 
-        public IEnumerable<Field> Fields { get; set; }
+        public IEnumerable<string> Fields { get; set; }
 
         // override object.Equals
         public override bool Equals(object obj)
@@ -23,6 +23,8 @@ namespace DatabaseTools.Model
             if ( !string.Equals(this.Name, other.Name) ) return false;
 
             if ( this.Fields.Count() != other.Fields.Count()) return false;
+
+            // TODO: assert that fields are the same and in the same order
 
             return true;
         }

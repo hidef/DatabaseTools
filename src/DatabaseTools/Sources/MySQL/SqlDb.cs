@@ -29,15 +29,35 @@ namespace DatabaseTools.Sources.MySQL
 
         public IEnumerable<Table> TableTypes {
             get { 
-               return _connection
+                string databaseName = _connection.Database;
+                return _connection
                     .Query("SHOW TABLES;")
-                    .Select(t => new Table {
-                        Name = t.Tables_in_heroku_9a95a5b89d7b826,
-                        Fields = getFields(t.Tables_in_heroku_9a95a5b89d7b826)
-                    })
+                    .Select(t => 
+                        {
+                            string tableName = t[$"Tables_in_{databaseName}"];
+                            var table = new Table {
+                                Name = tableName,
+                                Fields = getFields(tableName),
+                            };
+                            // table.Indices = getIndices(tableName)
+                            return table;
+                        })
                     .ToList();
             }
         }
+
+        // private IEnumerable<string> getIndices(string tableName)
+        // {
+        //      return _connection
+        //         .Query($"SELECT DISTINCT TABLE_NAME, INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '{tableName}';", 
+        //         new {
+        //             tableName
+        //         })
+        //         .Select(t => new Index {
+        //             Name = t.INDEX_NAME
+        //         })
+        //         .ToList();
+        // }
 
         private IEnumerable<Field> getFields(string tableName) // TODO: are we succeptible to injection attacks here
         {

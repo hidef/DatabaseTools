@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using DatabaseTools.Model;
-using System.Reflection;
 
 namespace DatabaseTools.Sources.Code
 {
@@ -41,10 +40,7 @@ namespace DatabaseTools.Sources.Code
                         var pkAttribute = (PrimaryKeyAttribute) t.PropertyType.GenericTypeArguments.Single().GetTypeInfo().GetCustomAttribute(typeof(PrimaryKeyAttribute));
                         if ( pkAttribute != null ) 
                         {
-                            table.PrimaryKey = new Index {
-                                Name = "", // TODO
-                                Fields = table.Fields.Where(f => pkAttribute.Columns.Contains(f.Name) )
-                            };
+                            table.PrimaryKey = pkAttribute.Columns;
                         }
                         return table;
                     });
