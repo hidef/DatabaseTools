@@ -112,6 +112,12 @@ namespace DatabaseTools.Sources.MySQL
                 {
                     builder.AppendLine($"    {field.Name} {getDbType(field.Type)},");
                 }
+//   FOREIGN KEY (b) REFERENCES User(id),
+//   PRIMARY KEY(a,b)
+                if ( table.PrimaryKey != null ) 
+                {
+                    builder.AppendLine($"    PRIMARY KEY ({table.PrimaryKey.Aggregate((a, b) => a + ", " + b)}),");
+                }
                 builder.Remove(builder.Length - 2, 1);
                 builder.AppendLine($");");
                 builder.AppendLine();
@@ -129,6 +135,21 @@ namespace DatabaseTools.Sources.MySQL
 
                 foreach (Field removed in mod.RemovedColumns){
                     builder.AppendLine($"ALTER TABLE {mod.Name} DROP COLUMN {removed.Name};");
+                }
+
+                if ( mod.IsPrimaryKeyAdded ) 
+                {
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD PRIMARY KEY ({mod.Out.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                }
+
+                if ( mod.IsPrimaryKeyChanged ) 
+                {
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY, ADD PRIMARY KEY ({mod.Out.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                }
+
+                if ( mod.IsPrimaryKeyRemoved ) 
+                {
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY;");
                 }
             }
 

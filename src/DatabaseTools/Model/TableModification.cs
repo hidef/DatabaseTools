@@ -4,6 +4,24 @@ using System.Linq;
 
 namespace DatabaseTools.Model
 {
+    public static class extensions
+    {
+        public static bool EqualTo<T>(this IList<T> self, IList<T> other) where T : class
+        {
+            if ( self == null ) return false;
+            if ( other == null ) return false;
+            
+            if ( self.Count() != other.Count() ) return false;
+
+            int count = self.Count();
+            for ( int i = 0; i < count; i++ )
+            {
+                if ( self[i] != other[i] ) return false;
+            }
+
+            return true;
+        }
+    }
     public class TableModification
     {
         private Table @in;
@@ -15,7 +33,25 @@ namespace DatabaseTools.Model
             this.@out = @out;
         }
 
-        public string Name { get; set; }
+        public string Name { get { return this.@in.Name; } }
+
+        public bool IsPrimaryKeyAdded {
+            get {
+                return this.@in == null && this.@out != null;
+            }
+        }
+        
+        public bool IsPrimaryKeyRemoved {
+            get {
+                return this.@in != null && this.@out == null;
+            }
+        }
+        
+        public bool IsPrimaryKeyChanged { 
+            get {
+                return !this.@in.PrimaryKey.EqualTo(this.@out.PrimaryKey);
+            }
+        }
 
         // public IEnumerable<Index> AddedIndices 
         // {
@@ -115,5 +151,8 @@ namespace DatabaseTools.Model
                     .ToList();
             }    
         }
+
+        public Table In { get => @in; set => @in = value; }
+        public Table Out { get => @out; set => @out = value; }
     }
 }

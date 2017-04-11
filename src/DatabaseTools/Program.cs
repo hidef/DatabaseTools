@@ -122,29 +122,29 @@ namespace DatabaseTools
 
         public static void Main(string[] args)
         {
-            // Console.WriteLine("Discovering Database Changes.");
-            // var builder = new ConfigurationBuilder()
-            //     .SetBasePath(Directory.GetCurrentDirectory())
-            //     .AddEnvironmentVariables()
-            //     .AddInMemoryCollection(new Dictionary<string, string> {
-            //         { "from", discoverDatabase() }
-            //     })
-            //     .AddCommandLine(args)
-            //     .AddJsonFile("appsettings.json", true);
+            Console.WriteLine("Discovering Database Changes.");
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    { "from", discoverDatabase() }
+                })
+                .AddCommandLine(args)
+                .AddJsonFile("appsettings.json", true);
 
-            // var configuration = builder.Build();
+            var configuration = builder.Build();
 
             // IDb source = GetSource(configuration["from"]);
-            // IDb destination = GetSource(configuration["to"]);
+            IDb destination = GetSource(configuration["to"]);
             
             DbDiff diff = StaticExampleDiff();
             // DbDiff diff = Diff(source, destination);
 
             Console.WriteLine(JsonConvert.SerializeObject(diff, Formatting.Indented));
  
-            // string diffScript = destination.GenerateScript(diff);
+            string diffScript = destination.GenerateScript(diff);
 
-            // Console.WriteLine(diffScript);
+            Console.WriteLine(diffScript);
             
             // destination.Apply(diff);
 
@@ -152,7 +152,7 @@ namespace DatabaseTools
 
         private static string discoverDatabase()
         {
-            var projectName = new DirectoryInfo("/Users/robert.stiff/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
+            var projectName = new DirectoryInfo("/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
             string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.0", projectName.Name + ".dll");
             
             var assemblyName = new FileInfo(path);
@@ -184,8 +184,8 @@ namespace DatabaseTools
             {
                 AddedTables = new [] {
                     new Table {
-                        Name = "Some new Table",
-                        PrimaryKey = new [] { "CategoryId, ProductId" },
+                        Name = "Some_new_Table",
+                        PrimaryKey = new [] { "CategoryId", "ProductId" },
                         Fields = new [] {
                             new Field {
                                 Name = "CategoryId",
@@ -201,7 +201,7 @@ namespace DatabaseTools
                 ModifiedTables = new [] {
                     new TableModification(
                         new Table {
-                            Name = "Some existingTable Table",
+                            Name = "Some_existing_Table",
                             PrimaryKey = new [] { "ProductId" },
                             Fields = new [] {
                                 new Field {
@@ -215,8 +215,8 @@ namespace DatabaseTools
                             }
                         },
                         new Table {
-                            Name = "Some existingTable Table",
-                            PrimaryKey = new [] { "CategoryId, ProductId" },
+                            Name = "Some_existing_Table",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
                             Fields = new [] {
                                 new Field {
                                     Name = "CategoryId",
@@ -232,7 +232,7 @@ namespace DatabaseTools
                 },
                 RemovedTables = new [] {
                     new Table {
-                        Name = "Some expired Table",
+                        Name = "Some_expired_Table",
                         PrimaryKey = new [] { "CategoryId, ProductId" },
                         Fields = new [] {
                             new Field {
@@ -275,7 +275,7 @@ namespace DatabaseTools
             .Where(p => p.Out != null);
 
             return coexistingTables
-                .Select(t => new TableModification(t.In, t.Out) { Name = t.In.Name})
+                .Select(t => new TableModification(t.In, t.Out))
                 .Where(tm => /*tm.AddedIndices.Count() +*/ tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
                 .ToList();
         }
