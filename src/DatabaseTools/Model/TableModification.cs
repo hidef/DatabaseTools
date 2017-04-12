@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DatabaseTools.Model
+namespace DatabaseTools.Model   
 {
     public static class extensions
     {
         public static bool EqualTo<T>(this IList<T> self, IList<T> other) where T : class
         {
+            if ( self == other ) return true;
             if ( self == null ) return false;
             if ( other == null ) return false;
             
