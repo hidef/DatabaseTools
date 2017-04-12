@@ -155,5 +155,31 @@ namespace DatabaseTools.Model
 
         public Table In { get => @in; set => @in = value; }
         public Table Out { get => @out; set => @out = value; }
+
+        public IEnumerable<Index> AddedIndices 
+        { 
+            get 
+            {
+                var _in = this.@in.Indices;
+                var _out = this.@out.Indices;
+
+                return _out
+                    .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase) && t.IsUnique == t2.IsUnique && t.Fields.EqualTo(t2.Fields)))
+                    .ToList();
+            }
+        }
+
+        public IEnumerable<Index> RemovedIndices 
+        { 
+            get 
+            {
+                var _in = this.@in.Indices;
+                var _out = this.@out.Indices;
+
+                return _in
+                    .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase) && t.IsUnique == t2.IsUnique && t.Fields.EqualTo(t2.Fields)))
+                    .ToList();
+            }
+        }
     }
 }

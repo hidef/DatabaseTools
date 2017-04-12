@@ -208,6 +208,60 @@ namespace DatabaseTools
                 ModifiedTables = new [] {
                     new TableModification(
                         new Table {
+                            Name = "table_with_removed_index",
+                            Indices = new [] {
+                                new Index {
+                                    Name = "IX_Something"
+                                }
+                            },
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_removed_index",
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_changed_index",
+                            Indices = new [] {
+                                new Index {
+                                    Name = "IX_Something",
+                                    Fields = new [] { "ProductId" }
+                                }
+                            },
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_changed_index",
+                            Indices = new [] {
+                                new Index {
+                                    Name = "IX_Something",
+                                    Fields = new [] { "ProductId", "CategoryId" },
+                                    IsUnique = true
+                                }
+                            },
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_added_index",
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_added_index",
+                            Indices = new [] {
+                                new Index {
+                                    Name = "IX_Something",
+                                    Fields = new [] { "ProductId"}
+                                }
+                            },
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
                             Name = "table_with_modified_pk",
                             PrimaryKey = new [] { "ProductId" },
                             Fields = new Field[] {}

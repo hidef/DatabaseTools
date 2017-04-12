@@ -160,6 +160,23 @@ namespace DatabaseTools.Sources.MySQL
                 {
                     builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY;");
                 }
+
+                foreach ( Index index in mod.AddedIndices )
+                {
+                    var uniqueText = index.IsUnique ? "UNIQUE " : "";
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD {uniqueText} KEY {index.Name} ({index.Fields.Aggregate((a, b) => a + ", " + b)});");
+                }
+
+                // foreach ( var index in mod.ModifiedIndices )
+                // {
+                //     var uniqueText = index.IsUnique ? "UNIQUE " : "";
+                //     builder.AppendLine($"ALTER TABLE {mod.Name} DROP KEY {index.Name}, ADD {uniqueText} KEY {index.Name} ({index.New.Fields.Aggregate((a, b) => a + ", " + b)});");
+                // }
+
+                foreach ( var index in mod.RemovedIndices )
+                {
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP KEY {index.Name};");
+                }
             }
 
             foreach (Table table in diff.RemovedTables) {
