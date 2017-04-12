@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DatabaseTools.Model
 {
@@ -9,7 +8,7 @@ namespace DatabaseTools.Model
 
         public bool IsUnique { get; set; }
 
-        public IEnumerable<string> Fields { get; set; }
+        public IList<string> Fields { get; set; }
 
         // override object.Equals
         public override bool Equals(object obj)
@@ -22,7 +21,7 @@ namespace DatabaseTools.Model
 
             if ( !string.Equals(this.Name, other.Name) ) return false;
 
-            if ( this.Fields.Count() != other.Fields.Count()) return false;
+            if ( this.Fields.EqualTo(other.Fields)) return false;
 
             // TODO: assert that fields are the same and in the same order
 
