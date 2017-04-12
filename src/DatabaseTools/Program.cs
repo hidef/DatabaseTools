@@ -324,6 +324,94 @@ namespace DatabaseTools
                                 }
                             }
                         }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "Another_existing_Table",
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "Name",
+                                    Type = "string"
+                                }
+                            }
+                        },
+                        new Table {
+                            Name = "Another_existing_Table",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "ProductId",
+                                    Type = "string"
+                                }
+                            }
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "yet_Another_existing_Table",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "Name",
+                                    Type = "string"
+                                }
+                            }
+                        },
+                        new Table {
+                            Name = "yet_Another_existing_Table",
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "ProductId",
+                                    Type = "string"
+                                }
+                            }
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "And_Another_existing_Table",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "Name",
+                                    Type = "string"
+                                }
+                            }
+                        },
+                        new Table {
+                            Name = "And_Another_existing_Table",
+                            PrimaryKey = new string[] { },
+                            Fields = new [] {
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "ProductId",
+                                    Type = "string"
+                                }
+                            }
+                        }
                     )
                 },
                 RemovedTables = new [] {
