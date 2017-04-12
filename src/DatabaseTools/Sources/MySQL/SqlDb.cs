@@ -106,18 +106,27 @@ namespace DatabaseTools.Sources.MySQL
         {
             StringBuilder builder = new StringBuilder();
 
-            foreach (Table table in diff.AddedTables) {
+            foreach (Table table in diff.AddedTables) 
+            {
+
                 builder.AppendLine($"CREATE TABLE {table.Name} (");
+
                 foreach ( var field in table.Fields.Where(f => !f.Ignored))
                 {
                     builder.AppendLine($"    {field.Name} {getDbType(field.Type)},");
                 }
-//   FOREIGN KEY (b) REFERENCES User(id),
-//   PRIMARY KEY(a,b)
+
+                foreach ( var index in table.Indices ) 
+                {
+                    var uniqueText = index.IsUnique ? "UNIQUE " : "";
+                    builder.AppendLine($"    {uniqueText} KEY {index.Name} ({index.Fields.Aggregate((a, b) => a + ", " + b)}),");
+                }
+
                 if ( table.PrimaryKey != null ) 
                 {
                     builder.AppendLine($"    PRIMARY KEY ({table.PrimaryKey.Aggregate((a, b) => a + ", " + b)}),");
                 }
+
                 builder.Remove(builder.Length - 2, 1);
                 builder.AppendLine($");");
                 builder.AppendLine();

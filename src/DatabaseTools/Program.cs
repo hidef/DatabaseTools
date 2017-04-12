@@ -186,6 +186,13 @@ namespace DatabaseTools
                     new Table {
                         Name = "Some_new_Table",
                         PrimaryKey = new [] { "CategoryId", "ProductId" },
+                        Indices = new [] {
+                            new Index {
+                                Name = "IX_ProductId",
+                                IsUnique = true,
+                                Fields = new [] { "ProductId", "CategoryId" }
+                            }
+                        },
                         Fields = new [] {
                             new Field {
                                 Name = "CategoryId",
