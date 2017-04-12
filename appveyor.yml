@@ -9,3 +9,4 @@ build_script:
     dotnet build test/DatabaseTools.Tests
 artifacts:
 - path: '**/*.nupkg'
+test: off
