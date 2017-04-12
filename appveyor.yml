@@ -9,7 +9,3 @@ build_script:
     dotnet build test/DatabaseTools.Tests
 artifacts:
 - path: '**/*.nupkg'
-assembly_info:
-  patch: true
-  assembly_version: '{version}'
-  file: '**\AssemblyInfo.cs'
