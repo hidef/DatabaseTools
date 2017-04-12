@@ -5,6 +5,8 @@ build_script:
     dotnet restore src/DatabaseTools
     dotnet build src/DatabaseTools /p:Version=%appveyor_build_version%
     dotnet pack src/DatabaseTools /p:Version=%appveyor_build_version%
+    dotnet restore test/DatabaseTools.Tests
+    dotnet build test/DatabaseTools.Tests
 artifacts:
 - path: '**/*.nupkg'
 assembly_info:
