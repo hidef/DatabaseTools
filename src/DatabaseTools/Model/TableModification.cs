@@ -8,6 +8,8 @@ namespace DatabaseTools.Model
     {
         public static bool EqualTo<T>(this IList<T> self, IList<T> other) where T : class
         {
+            if ( self == other ) return true;
+            
             if ( self == null ) return false;
             if ( other == null ) return false;
             
@@ -37,19 +39,19 @@ namespace DatabaseTools.Model
 
         public bool IsPrimaryKeyAdded {
             get {
-                return this.@in == null && this.@out != null;
+                return (this.@in.PrimaryKey == null || this.@in.PrimaryKey.Count() == 0) && (this.@out.PrimaryKey != null && this.@out.PrimaryKey.Count() > 0 );
             }
         }
         
         public bool IsPrimaryKeyRemoved {
             get {
-                return this.@in != null && this.@out == null;
+                return (this.@out.PrimaryKey == null || this.@out.PrimaryKey.Count() == 0) && (this.@in.PrimaryKey != null && this.@in.PrimaryKey.Count() > 0 );
             }
         }
         
         public bool IsPrimaryKeyChanged { 
             get {
-                return !this.@in.PrimaryKey.EqualTo(this.@out.PrimaryKey);
+                return !this.IsPrimaryKeyAdded && ! this.IsPrimaryKeyRemoved && !this.@in.PrimaryKey.EqualTo(this.@out.PrimaryKey);
             }
         }
 
