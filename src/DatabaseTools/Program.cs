@@ -201,13 +201,66 @@ namespace DatabaseTools
                 ModifiedTables = new [] {
                     new TableModification(
                         new Table {
-                            Name = "Some_existing_Table",
+                            Name = "table_with_modified_pk",
                             PrimaryKey = new [] { "ProductId" },
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_modified_pk",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_added_pk",
+                            PrimaryKey = new string[] { },
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_added_pk",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_added_pk2",
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_added_pk2",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_removed_pk",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_removed_pk",
+                            PrimaryKey = new string[] { },
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_removed_pk2",
+                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Fields = new Field[] {}
+                        },
+                        new Table {
+                            Name = "table_with_removed_pk2",
+                            Fields = new Field[] {}
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_added_column",
                             Fields = new [] {
-                                new Field {
-                                    Name = "CategoryId",
-                                    Type = "string"
-                                },
                                 new Field {
                                     Name = "Name",
                                     Type = "string"
@@ -215,15 +268,58 @@ namespace DatabaseTools
                             }
                         },
                         new Table {
-                            Name = "Some_existing_Table",
-                            PrimaryKey = new [] { "CategoryId", "ProductId" },
+                            Name = "table_with_added_column",
                             Fields = new [] {
                                 new Field {
-                                    Name = "CategoryId",
+                                    Name = "Name",
                                     Type = "string"
                                 },
                                 new Field {
                                     Name = "ProductId",
+                                    Type = "string"
+                                }
+                            }
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_changed_column",
+                            Fields = new [] {
+                                new Field {
+                                    Name = "Name",
+                                    Type = "string"
+                                }
+                            }
+                        },
+                        new Table {
+                            Name = "table_with_changed_column",
+                            Fields = new [] {
+                                new Field {
+                                    Name = "Name",
+                                    Type = "int"
+                                }
+                            }
+                        }
+                    ),
+                    new TableModification(
+                        new Table {
+                            Name = "table_with_removed_column",
+                            Fields = new [] {
+                                new Field {
+                                    Name = "Name",
+                                    Type = "string"
+                                },
+                                new Field {
+                                    Name = "CategoryId",
+                                    Type = "string"
+                                }
+                            }
+                        },
+                        new Table {
+                            Name = "table_with_removed_column",
+                            Fields = new [] {
+                                new Field {
+                                    Name = "Name",
                                     Type = "string"
                                 }
                             }
@@ -276,7 +372,7 @@ namespace DatabaseTools
 
             return coexistingTables
                 .Select(t => new TableModification(t.In, t.Out))
-                .Where(tm => /*tm.AddedIndices.Count() +*/ tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
+                .Where(tm => tm.IsPrimaryKeyAdded || tm.IsPrimaryKeyChanged || tm.IsPrimaryKeyRemoved || tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
                 .ToList();
         }
 

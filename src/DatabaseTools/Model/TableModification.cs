@@ -133,9 +133,9 @@ namespace DatabaseTools.Model
                 var _in = this.@in.Fields;
                 var _out = this.@out.Fields;
 
-                return _in
+                return _out
                     .Where(t => !t.Ignored)
-                    .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                    .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             }
         }
@@ -147,9 +147,9 @@ namespace DatabaseTools.Model
                 var _in = this.@in.Fields;
                 var _out = this.@out.Fields;
 
-                return _out
+                return _in
                     .Where(t => !t.Ignored)
-                    .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                    .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             }    
         }
