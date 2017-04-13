@@ -45,7 +45,7 @@ namespace DatabaseTools
 
         private static string discoverDatabase()
         {
-            var projectName = new DirectoryInfo("/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
+            var projectName = new DirectoryInfo(".");
             string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.1", projectName.Name + ".dll");
             
             var assemblyName = new FileInfo(path);
