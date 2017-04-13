@@ -14,7 +14,7 @@ namespace DatabaseTools
     public class Program
     {
 
-        public static IEnumerable<Tuple<string, string>> MySqlMappings = new [] {
+        public static IList<Tuple<string, string>> MySqlMappings = new [] {
             Tuple.Create("BOOL NOT NULL","bool"),
             Tuple.Create("BOOL NULL","bool?	"),
             Tuple.Create("BOOL","bool"),
@@ -66,7 +66,7 @@ namespace DatabaseTools
             Tuple.Create("TEXT", "string")
         };
 
-        public static IEnumerable<Tuple<string, string>> CSharpMappings = new [] {
+        public static IList<Tuple<string, string>> CSharpMappings = new [] {
             Tuple.Create("Int64","int64"),
             Tuple.Create("Long","long"),
             Tuple.Create("Boolean","boolean"),
@@ -93,7 +93,7 @@ namespace DatabaseTools
             Tuple.Create("Array","array")
         };
 
-        public static IEnumerable<Tuple<string, string>> PostGresMappings = new [] {
+        public static IList<Tuple<string, string>> PostGresMappings = new [] {
             Tuple.Create("int8","Int64"),
             Tuple.Create("int8","Long"),
             Tuple.Create("bool","Boolean"),
@@ -152,7 +152,7 @@ namespace DatabaseTools
 
         private static string discoverDatabase()
         {
-            var projectName = new DirectoryInfo("/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
+            var projectName = new DirectoryInfo("/Users/robert.stiff/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
             string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.0", projectName.Name + ".dll");
             
             var assemblyName = new FileInfo(path);
@@ -167,13 +167,13 @@ namespace DatabaseTools
             return myAssembly.GetType($"{myAssembly.FullName.Split(',')[0]}.Database").AssemblyQualifiedName;
         }
 
-        private static DbDiff Diff(IDb source, IDb destination)
+        private static DbDiff Diff(DatabaseModel old, DatabaseModel @new)
         {
             return new DbDiff 
             {
-                AddedTables = getAddedTables(source, destination),
-                ModifiedTables = getModifiedTables(source, destination),
-                RemovedTables = getRemovedTables(source, destination),
+                AddedTables = getAddedTables(old, @new),
+                ModifiedTables = getModifiedTables(old, @new),
+                RemovedTables = getRemovedTables(old, @new),
             };          
         }
 
@@ -494,46 +494,32 @@ namespace DatabaseTools
             };          
         }
 
-        private static IEnumerable<Table> getAddedTables(IDb source, IDb destination)
+        private static IList<Table> getAddedTables(DatabaseModel old, DatabaseModel @new)
         {
-            var _in = source
-                .TableTypes
-                .ToList();
-            var _out = destination.TableTypes.ToList();
-
-            return _in
-                .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+            return old.Tables
+                .Where(t => !@new.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
 
-        private static IEnumerable<TableModification> getModifiedTables(IDb source, IDb destination)
+        private static IList<TableModification> getModifiedTables(DatabaseModel old, DatabaseModel @new)
         {
-            var _in = source
-                .TableTypes
-                .ToList();
-            var _out = destination.TableTypes.ToList();
-
-            var coexistingTables = _in.Select(t => new {
-                In = t,
-                Out = _out.SingleOrDefault(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase))
+            var coexistingTables = old.Tables.Select(t => new {
+                Old = t,
+                New = @new.Tables.SingleOrDefault(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase))
             })
-            .Where(p => p.Out != null);
+            .Where(p => p.New != null);
 
             return coexistingTables
-                .Select(t => new TableModification(t.In, t.Out))
+                .Select(t => new TableModification(t.Old, t.New))
                 .Where(tm => tm.IsPrimaryKeyAdded || tm.IsPrimaryKeyChanged || tm.IsPrimaryKeyRemoved || tm.AddedColumns.Count() + tm.ChangedColumns.Count() + tm.RemovedColumns.Count() > 0)
                 .ToList();
         }
 
-        private static IEnumerable<Table> getRemovedTables(IDb source, IDb destination)
+        private static IList<Table> getRemovedTables(DatabaseModel old, DatabaseModel @new)
         {
-            var _in = source
-                .TableTypes
-                .ToList();
-            var _out = destination.TableTypes.ToList();
 
-            return _out
-                .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+            return @new.Tables
+                .Where(t => !old.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
 

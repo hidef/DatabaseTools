@@ -7,12 +7,12 @@ namespace DatabaseTools.Model
         public string Name { get; set; }
         public string[] PrimaryKey { get; set; }
         
-        private IEnumerable<Index> _indices = new Index[]{};
-        public IEnumerable<Index> Indices 
+        private IList<Index> _indices = new Index[]{};
+        public IList<Index> Indices 
         {
             get { return _indices; }
             set { _indices = value; }
         }
-        public IEnumerable<Field> Fields { get; set; }
+        public IList<Field> Fields { get; set; }
     }
 }

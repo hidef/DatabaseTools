@@ -4,7 +4,7 @@ namespace DatabaseTools.Model
 {
     internal interface IDb
     {
-        IEnumerable<Table> TableTypes { get; }
+        DatabaseModel GetModel();
         void Apply(DbDiff diff);
         string GenerateScript(DbDiff diff);
     }

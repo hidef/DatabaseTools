@@ -15,7 +15,7 @@ namespace DatabaseTools.Sources.Code
             this.type = type;
         }
 
-        public IEnumerable<Table> TableTypes {
+        public IList<Table> TableTypes {
             get {
                 return this
                     .type
@@ -35,6 +35,7 @@ namespace DatabaseTools.Sources.Code
                                     Type = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ? null : findType(p.PropertyType.Name),
                                     Ignored = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute)
                                 })
+                                .ToList()
                         };
 
                         var pkAttribute = (PrimaryKeyAttribute) t.PropertyType.GenericTypeArguments.Single().GetTypeInfo().GetCustomAttribute(typeof(PrimaryKeyAttribute));
@@ -43,7 +44,8 @@ namespace DatabaseTools.Sources.Code
                             table.PrimaryKey = pkAttribute.Columns;
                         }
                         return table;
-                    });
+                    })
+                    .ToList();
             }
         }
 
@@ -66,6 +68,13 @@ namespace DatabaseTools.Sources.Code
         public string GenerateScript(DbDiff diff)
         {
             throw new NotImplementedException();
+        }
+
+        public DatabaseModel GetModel()
+        {
+            return new DatabaseModel {
+                Tables = this.TableTypes
+            };
         }
     }
     

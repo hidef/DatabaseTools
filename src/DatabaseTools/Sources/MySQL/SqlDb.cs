@@ -27,7 +27,7 @@ namespace DatabaseTools.Sources.MySQL
             _connection.Open();   
         }
 
-        public IEnumerable<Table> TableTypes {
+        public IList<Table> TableTypes {
             get { 
                 string databaseName = _connection.Database;
                 return _connection
@@ -46,7 +46,7 @@ namespace DatabaseTools.Sources.MySQL
             }
         }
 
-        // private IEnumerable<string> getIndices(string tableName)
+        // private IList<string> getIndices(string tableName)
         // {
         //      return _connection
         //         .Query($"SELECT DISTINCT TABLE_NAME, INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '{tableName}';", 
@@ -59,7 +59,7 @@ namespace DatabaseTools.Sources.MySQL
         //         .ToList();
         // }
 
-        private IEnumerable<Field> getFields(string tableName) // TODO: are we succeptible to injection attacks here
+        private IList<Field> getFields(string tableName) // TODO: are we succeptible to injection attacks here
         {
             return _connection
                 .Query($"SHOW COLUMNS FROM {tableName}", new {
@@ -185,6 +185,13 @@ namespace DatabaseTools.Sources.MySQL
             }
 
             return builder.ToString();
+        }
+    
+        public DatabaseModel GetModel()
+        {
+            return new DatabaseModel {
+                Tables = this.TableTypes
+            };
         }
     } 
 }

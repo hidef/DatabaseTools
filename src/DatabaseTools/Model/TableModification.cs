@@ -54,7 +54,7 @@ namespace DatabaseTools.Model
             }
         }
 
-        // public IEnumerable<Index> AddedIndices 
+        // public IList<Index> AddedIndices 
         // {
         //     get {
         //         var _in = this.@in.Indices
@@ -70,7 +70,7 @@ namespace DatabaseTools.Model
         //     }
         // }
 
-        // public IEnumerable<Index> RemovedIndices 
+        // public IList<Index> RemovedIndices 
         // {
         //     get {
         //         var _in = this.@in.Indices
@@ -89,7 +89,7 @@ namespace DatabaseTools.Model
         //     }
         // }
         
-        // public IEnumerable<IndexModification> ChangeIndices 
+        // public IList<IndexModification> ChangeIndices 
         // {
         //     get {
         //         var _in = this.@in.Indices
@@ -108,7 +108,7 @@ namespace DatabaseTools.Model
         //     }
         // }
 
-        public IEnumerable<ColumnModification> ChangedColumns
+        public IList<ColumnModification> ChangedColumns
         {
             get {
                 var _in = this.@in.Fields
@@ -125,7 +125,7 @@ namespace DatabaseTools.Model
             }
         }
 
-        public IEnumerable<Field> AddedColumns
+        public IList<Field> AddedColumns
         {
             get 
             {
@@ -139,7 +139,7 @@ namespace DatabaseTools.Model
             }
         }
 
-        public IEnumerable<Field> RemovedColumns
+        public IList<Field> RemovedColumns
         {
             get 
             {
@@ -156,7 +156,7 @@ namespace DatabaseTools.Model
         public Table In { get => @in; set => @in = value; }
         public Table Out { get => @out; set => @out = value; }
 
-        public IEnumerable<Index> AddedIndices 
+        public IList<Index> AddedIndices 
         { 
             get 
             {
@@ -169,7 +169,7 @@ namespace DatabaseTools.Model
             }
         }
 
-        public IEnumerable<Index> RemovedIndices 
+        public IList<Index> RemovedIndices 
         { 
             get 
             {

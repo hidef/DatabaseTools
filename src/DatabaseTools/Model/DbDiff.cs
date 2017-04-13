@@ -4,8 +4,8 @@ namespace DatabaseTools.Model
 {
     public class DbDiff
     {
-        public IEnumerable<Table> AddedTables { get; internal set; }
-        public IEnumerable<Table> RemovedTables { get; internal set; }
-        public IEnumerable<TableModification> ModifiedTables { get; set; }
+        public IList<Table> AddedTables { get; internal set; }
+        public IList<Table> RemovedTables { get; internal set; }
+        public IList<TableModification> ModifiedTables { get; set; }
     }
 }
