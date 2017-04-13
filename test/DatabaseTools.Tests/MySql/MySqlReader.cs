@@ -3,39 +3,13 @@ using DatabaseTools.Sources.Code;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace DatabaseTools.Tests.CSharp
+namespace DatabaseTools.Tests.MySql
 {
-    public class CSharpReader
+    public class MySqlReader
     {
         
-        [PrimaryKey(nameof(Nation.Id))]
-        class Nation
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-        }
-
-        [PrimaryKey(nameof(User.GroupId), nameof(User.UserId))]
-        class User
-        {
-            public int GroupId { get; set; }
-            public string UserId { get; set; }
-            
-            // [Index("IX_Name")]
-            public string Name { get; set; }
-
-            // [ForeignKey(typeof(Nation), nameof(Nation.Id))]
-            public string Nationality { get; set; } 
-        }
-
-        class MyDatabase
-        {
-            public ITable<User> User { get; set; }
-            public ITable<Nation> Nation { get; set; }
-        }
-
         [Fact]
-        public void AddedTable()
+        public void ReadTable()
         {
             var expectedModel = new DatabaseModel {
                 Tables = new [] {
