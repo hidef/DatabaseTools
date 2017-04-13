@@ -6,161 +6,28 @@ namespace DatabaseTools.Model
 {
     public class TableModification
     {
-        private Table @in;
-        private Table @out;
-
-        public TableModification(Table @in, Table @out)
-        {
-            this.@in = @in;
-            this.@out = @out;
-        }
-
-        public string Name { get { return this.@in.Name; } }
-
-        public bool IsPrimaryKeyAdded {
-            get {
-                return (this.@in.PrimaryKey == null || this.@in.PrimaryKey.Count() == 0) && (this.@out.PrimaryKey != null && this.@out.PrimaryKey.Count() > 0 );
-            }
-        }
         
-        public bool IsPrimaryKeyRemoved {
-            get {
-                return (this.@out.PrimaryKey == null || this.@out.PrimaryKey.Count() == 0) && (this.@in.PrimaryKey != null && this.@in.PrimaryKey.Count() > 0 );
-            }
-        }
-        
-        public bool IsPrimaryKeyChanged { 
-            get {
-                return !this.IsPrimaryKeyAdded && ! this.IsPrimaryKeyRemoved && !this.@in.PrimaryKey.EqualTo(this.@out.PrimaryKey);
-            }
-        }
+        public string Name => this.Old.Name;
 
-        // public IList<Index> AddedIndices 
-        // {
-        //     get {
-        //         var _in = this.@in.Indices
-        //             .Where(i => i != null)
-        //             .ToList();
-        //         var _out = this.@out.Indices
-        //             .Where(i => i != null)
-        //             .ToList(); 
+        public Table Old { get; set; }
+        public Table New { get; set; }
 
-        //         return _in
-        //             .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-        //             .ToList();
-        //     }
-        // }
+        public bool IsPrimaryKeyAdded { get; set; }
+        public bool IsPrimaryKeyRemoved { get; set; }
+        public bool IsPrimaryKeyChanged {  get; set; }
 
-        // public IList<Index> RemovedIndices 
-        // {
-        //     get {
-        //         var _in = this.@in.Indices
-        //             .Append(this.@in.PrimaryKey)
-        //             .Where(i => i != null)
-        //             .ToList();
-        //         var _out = this.@out.Indices
-        //             .Append(this.@out.PrimaryKey)
-        //             .Where(i => i != null)
-        //             .ToList(); 
+        public IList<Index> AddedIndices  {  get; set; }
+        public IList<IndexModification> ChangeIndices  {  get; set; }
+        public IList<Index> RemovedIndices  {  get; set; }
 
-                   
-        //         return _out
-        //             .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-        //             .ToList();
-        //     }
-        // }
-        
-        // public IList<IndexModification> ChangeIndices 
-        // {
-        //     get {
-        //         var _in = this.@in.Indices
-        //             .Append(this.@in.PrimaryKey)
-        //             .Where(i => i != null)
-        //             .ToList();
-        //         var _out = this.@out.Indices
-        //             .Append(this.@out.PrimaryKey)
-        //             .Where(i => i != null)
-        //             .ToList(); 
+        public IList<Field> AddedColumns {  get; set; }
+        public IList<ColumnModification> ChangedColumns {  get; set; }
+        public IList<Field> RemovedColumns {  get; set; }
 
-        //         return _in
-        //             .Join(_out, i => i.Name, i => i.Name, (a, b) => new IndexModification(a, b))
-        //             .Where(iMod => !IndexModification.Equals(iMod.A, iMod.B))
-        //             .ToList();
-        //     }
-        // }
-
-        public IList<ColumnModification> ChangedColumns
-        {
-            get {
-                var _in = this.@in.Fields
-                    .Where(t => !t.Ignored)
-                    .ToList();
-                var _out = this.@out.Fields
-                    .Where(t => !t.Ignored)
-                    .ToList(); 
-
-                return _in
-                    .Join(_out, i => i.Name, i => i.Name, (a, b) => new ColumnModification(a, b))
-                    .Where(cMod => cMod.A.Type != cMod.B.Type)
-                    .ToList();
-            }
-        }
-
-        public IList<Field> AddedColumns
-        {
-            get 
-            {
-                var _in = this.@in.Fields;
-                var _out = this.@out.Fields;
-
-                return _out
-                    .Where(t => !t.Ignored)
-                    .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-            }
-        }
-
-        public IList<Field> RemovedColumns
-        {
-            get 
-            {
-                var _in = this.@in.Fields;
-                var _out = this.@out.Fields;
-
-                return _in
-                    .Where(t => !t.Ignored)
-                    .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-            }    
-        }
-
-        public Table In { get => @in; set => @in = value; }
-        public Table Out { get => @out; set => @out = value; }
-
-        public IList<Index> AddedIndices 
-        { 
-            get 
-            {
-                var _in = this.@in.Indices;
-                var _out = this.@out.Indices;
-
-                return _out
-                    .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase) && t.IsUnique == t2.IsUnique && t.Fields.EqualTo(t2.Fields)))
-                    .ToList();
-            }
-        }
-
-        public IList<Index> RemovedIndices 
-        { 
-            get 
-            {
-                var _in = this.@in.Indices;
-                var _out = this.@out.Indices;
-
-                return _in
-                    .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase) && t.IsUnique == t2.IsUnique && t.Fields.EqualTo(t2.Fields)))
-                    .ToList();
-            }
-        }
+        public bool IsModified => 
+            this.IsPrimaryKeyAdded || 
+            this.IsPrimaryKeyChanged || 
+            this.IsPrimaryKeyRemoved || 
+            this.AddedColumns.Count() + this.ChangedColumns.Count() + this.RemovedColumns.Count() > 0;
     }
 }
