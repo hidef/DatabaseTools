@@ -44,13 +44,78 @@ namespace DatabaseTools
                         Old = t.Old,
                         New = t.New,
                         IsPrimaryKeyAdded = isPrimaryKeyAdded,
-                        IsPrimaryKeyChanged = IsPrimaryKeyChanged(t.Old, t.New, isPrimaryKeyAdded, isPrimaryKeyRemoved)
+                        IsPrimaryKeyChanged = IsPrimaryKeyChanged(t.Old, t.New, isPrimaryKeyAdded, isPrimaryKeyRemoved),
                         IsPrimaryKeyRemoved = isPrimaryKeyRemoved,
+                        AddedColumns = AddedColumns(t.Old, t.New),
+                        ChangedColumns = ChangedColumns(t.Old, t.New),
+                        RemovedColumns = RemovedColumns(t.Old, t.New),
+                        AddedIndices = AddedIndices(t.Old, t.New),
+                        // TODO: ChangedIndices = ChangedIndices(t.Old, t.New),
+                        RemovedIndices = RemovedIndices(t.Old, t.New)
                     };
                 })
                 .Where(tm => tm.IsModified)
                 .ToList();
         }
+
+
+        public static IList<ColumnModification> ChangedColumns(Table old, Table @new)
+        {
+            var _in = old.Fields
+                .Where(t => !t.Ignored)
+                .ToList();
+            var _out = @new.Fields
+                .Where(t => !t.Ignored)
+                .ToList();
+
+            return _in
+                .Join(_out, i => i.Name, i => i.Name, (a, b) => new ColumnModification(a, b))
+                .Where(cMod => cMod.A.Type != cMod.B.Type)
+                .ToList();
+        }
+
+        public static IList<Field> AddedColumns(Table old, Table @new)
+        {
+            var _in = old.Fields;
+            var _out = @new.Fields;
+
+            return _out
+                .Where(t => !t.Ignored)
+                .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+        public static IList<Field> RemovedColumns(Table old, Table @new)
+        {
+            var _in = old.Fields;
+            var _out = @new.Fields;
+
+            return _in
+                .Where(t => !t.Ignored)
+                .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+        public static IList<Index> AddedIndices(Table old, Table @new)
+        {
+            var _in = old.Indices;
+            var _out = @new.Indices;
+
+            return _out
+                .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase) && t.IsUnique == t2.IsUnique && t.Fields.EqualTo(t2.Fields)))
+                .ToList();
+        }
+
+        public static IList<Index> RemovedIndices(Table old, Table @new)
+        {
+            var _in = old.Indices;
+            var _out = @new.Indices;
+
+            return _in
+                .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase) && t.IsUnique == t2.IsUnique && t.Fields.EqualTo(t2.Fields)))
+                .ToList();
+        }
+
 
         public static bool IsPrimaryKeyAdded(Table old, Table @new)
         {

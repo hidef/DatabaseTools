@@ -51,7 +51,7 @@ namespace DatabaseTools.Sources.Code
 
         private string findType(string type)
         {
-            var matchedMapping = Program.CSharpMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
+            var matchedMapping = TypeMappings.CSharpMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
 
             if ( matchedMapping == null ) 
             {

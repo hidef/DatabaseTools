@@ -74,7 +74,7 @@ namespace DatabaseTools.Sources.MySQL
 
         private string findType(string type)
         {
-            var matchedMapping = Program.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
+            var matchedMapping = TypeMappings.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
 
             if ( matchedMapping == null ) 
             {
@@ -85,7 +85,7 @@ namespace DatabaseTools.Sources.MySQL
 
         private static string getDbType(string str)
         {
-            var matchedMapping = Program.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item2, str, StringComparison.OrdinalIgnoreCase));
+            var matchedMapping = TypeMappings.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item2, str, StringComparison.OrdinalIgnoreCase));
 
             if ( matchedMapping == null ) 
             {
@@ -148,12 +148,12 @@ namespace DatabaseTools.Sources.MySQL
 
                 if ( mod.IsPrimaryKeyAdded ) 
                 {
-                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD PRIMARY KEY ({mod.Out.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD PRIMARY KEY ({mod.New.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
                 }
 
                 if ( mod.IsPrimaryKeyChanged ) 
                 {
-                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY, ADD PRIMARY KEY ({mod.Out.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY, ADD PRIMARY KEY ({mod.New.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
                 }
 
                 if ( mod.IsPrimaryKeyRemoved ) 
