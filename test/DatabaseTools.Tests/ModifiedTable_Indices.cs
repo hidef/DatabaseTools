@@ -74,7 +74,12 @@ namespace DatabaseTools.Tests
                 Name = "a new table",
                 Indices = new [] {
                     new Index {
-                        Name = "IX_UserId",
+                        Name = "IX_1",
+                        Fields = new [] { "UserId" },
+                        IsUnique = true
+                    },
+                    new Index {
+                        Name = "IX_2",
                         Fields = new [] { "UserId" },
                         IsUnique = true
                     }
@@ -85,8 +90,13 @@ namespace DatabaseTools.Tests
                 Name = "a new table",
                 Indices = new [] {
                     new Index {
-                        Name = "IX_UserId",
+                        Name = "IX_1",
                         Fields = new [] { "GroupId", "UserId" },
+                        IsUnique = true
+                    },
+                    new Index {
+                        Name = "IX_2",
+                        Fields = new [] { "UserId" },
                         IsUnique = false
                     }
                 },
@@ -97,9 +107,13 @@ namespace DatabaseTools.Tests
 
             Assert.Equal(1, diff.ModifiedTables.Count);
             Assert.Equal(true, diff.ModifiedTables.Single().IsModified);
-            Assert.Equal(1, diff.ModifiedTables.Single().ChangedIndices.Count());
-            Assert.Equal(old.Indices.Single(), diff.ModifiedTables.Single().ChangedIndices.Single().A);
-            Assert.Equal(@new.Indices.Single(), diff.ModifiedTables.Single().ChangedIndices.Single().B);
+            Assert.Equal(2, diff.ModifiedTables.Single().ChangedIndices.Count());
+            
+            Assert.Equal(old.Indices[0], diff.ModifiedTables.Single().ChangedIndices[0].A);
+            Assert.Equal(@new.Indices[0], diff.ModifiedTables.Single().ChangedIndices[0].B);
+            
+            Assert.Equal(old.Indices[1], diff.ModifiedTables.Single().ChangedIndices[1].A);
+            Assert.Equal(@new.Indices[1], diff.ModifiedTables.Single().ChangedIndices[1].B);
         }
     }
 }

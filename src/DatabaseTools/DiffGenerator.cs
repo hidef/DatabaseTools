@@ -76,6 +76,9 @@ namespace DatabaseTools
 
         public static IList<IndexModification> ChangeIndices(Table old, Table @new)
         {
+            if ( old.Indices == null || old.Indices.Count == 0 ) return new IndexModification[] {};
+            if ( @new.Indices == null || @new.Indices.Count == 0 ) return new IndexModification[] {};
+
             var _in = old.Indices
                 .Where(i => i != null)
                 .ToList();
@@ -85,7 +88,7 @@ namespace DatabaseTools
 
             return _in
                 .Join(_out, i => i.Name, i => i.Name, (a, b) => new IndexModification(a, b))
-                .Where(iMod => !IndexModification.Equals(iMod.A, iMod.B))
+                .Where(iMod => iMod.A.IsUnique != iMod.B.IsUnique || !iMod.A.Fields.EqualTo(iMod.B.Fields))
                 .ToList();
         }
 
