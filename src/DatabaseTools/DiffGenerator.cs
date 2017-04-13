@@ -77,6 +77,9 @@ namespace DatabaseTools
 
         public static IList<ColumnModification> ChangedColumns(Table old, Table @new)
         {
+            if ( old.Fields == null || old.Fields.Count == 0 ) return new ColumnModification[] {};
+            if ( @new.Fields == null || @new.Fields.Count == 0 ) return new ColumnModification[] {};
+
             var _in = old.Fields
                 .Where(t => !t.Ignored)
                 .ToList();
@@ -92,6 +95,9 @@ namespace DatabaseTools
 
         public static IList<Field> AddedColumns(Table old, Table @new)
         {
+            if ( old.Fields == null || old.Fields.Count == 0 ) return @new.Fields;
+            if ( @new.Fields == null || @new.Fields.Count == 0 ) return new Field[] {};
+
             var _in = old.Fields;
             var _out = @new.Fields;
 
@@ -103,6 +109,9 @@ namespace DatabaseTools
 
         public static IList<Field> RemovedColumns(Table old, Table @new)
         {
+            if ( old.Fields == null || old.Fields.Count == 0 ) return new Field[] {};
+            if ( @new.Fields == null || @new.Fields.Count == 0 ) return old.Fields;
+
             var _in = old.Fields;
             var _out = @new.Fields;
 

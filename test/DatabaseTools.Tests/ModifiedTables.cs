@@ -1,0 +1,59 @@
+using System.Linq;
+using DatabaseTools.Model;
+using Xunit;
+
+namespace DatabaseTools.Tests
+{
+    public class ModifiedTables
+    {
+        [Fact]
+        public void AddedColumns()
+        {
+            var old = new Table {
+                Name = "a new table",
+            };
+
+            var @new = new Table {
+                Name = "a new table",
+                Fields = new [] {
+                    new Field {
+                        Name = "UserId",
+                        Type = "int"
+                    }
+                }
+            };
+
+            var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
+
+            Assert.Equal(1, diff.ModifiedTables.Count);
+            Assert.Equal(1, diff.ModifiedTables.Single().AddedColumns.Count());
+            Assert.Equal("UserId", diff.ModifiedTables.Single().AddedColumns.Single().Name);
+            Assert.Equal("int", diff.ModifiedTables.Single().AddedColumns.Single().Type);
+        }
+
+        [Fact]
+        public void RemovedColumns()
+        {
+            var old = new Table {
+                Name = "a new table",
+                Fields = new [] {
+                    new Field {
+                        Name = "UserId",
+                        Type = "int"
+                    }
+                }
+            };
+
+            var @new = new Table {
+                Name = "a new table",
+            };
+
+            var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
+
+            Assert.Equal(1, diff.ModifiedTables.Count);
+            Assert.Equal(1, diff.ModifiedTables.Single().RemovedColumns.Count());
+            Assert.Equal("UserId", diff.ModifiedTables.Single().RemovedColumns.Single().Name);
+            Assert.Equal("int", diff.ModifiedTables.Single().RemovedColumns.Single().Type);
+        }
+    }
+}
