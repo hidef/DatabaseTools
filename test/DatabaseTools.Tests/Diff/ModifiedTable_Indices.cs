@@ -2,7 +2,7 @@ using System.Linq;
 using DatabaseTools.Model;
 using Xunit;
 
-namespace DatabaseTools.Tests
+namespace DatabaseTools.Tests.Diff
 {
     public class ModifiedTable_Indices
     {

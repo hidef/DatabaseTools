@@ -2,9 +2,9 @@ using System.Linq;
 using DatabaseTools.Model;
 using Xunit;
 
-namespace DatabaseTools.Tests
+namespace DatabaseTools.Tests.Diff
 {
-    public class DiffTests
+    public class TableDiffs
     {
         [Fact]
         public void AddedTable()
