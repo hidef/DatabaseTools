@@ -6,7 +6,7 @@ using DatabaseTools.Model;
 
 namespace DatabaseTools.Sources.Code
 {
-    internal class CSharpDbDefiniton : IDb
+    public class CSharpDbDefiniton : IDb
     {
         private Type type;
 
