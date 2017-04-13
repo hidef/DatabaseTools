@@ -28,6 +28,9 @@ namespace DatabaseTools.Model
             this.IsPrimaryKeyAdded || 
             this.IsPrimaryKeyChanged || 
             this.IsPrimaryKeyRemoved || 
-            this.AddedColumns.Count() + this.ChangedColumns.Count() + this.RemovedColumns.Count() > 0;
+             this.AddedColumns.Count() +
+             this.ChangedColumns.Count() + 
+             this.RemovedColumns.Count() 
+             > 0;
     }
 }
