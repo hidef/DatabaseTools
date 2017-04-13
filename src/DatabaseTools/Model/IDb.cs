@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace DatabaseTools.Model
 {
     internal interface IDb

@@ -27,5 +27,15 @@ namespace DatabaseTools.Model
 
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 0;
+            if ( Name != null ) hashCode ^= Name.GetHashCode();
+            hashCode ^= IsUnique.GetHashCode();
+            if ( Fields != null ) hashCode ^= Fields.GetHashCode();
+            
+            return hashCode;
+        }
     }
 }
