@@ -20,6 +20,9 @@ namespace DatabaseTools
 
         private static IList<Table> getAddedTables(DatabaseModel old, DatabaseModel @new)
         {
+            if ( old.Tables == null || old.Tables.Count() == 0 ) return @new.Tables;
+            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return new Table[] {};
+
             return old.Tables
                 .Where(t => !@new.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
@@ -27,6 +30,9 @@ namespace DatabaseTools
 
         private static IList<TableModification> getModifiedTables(DatabaseModel old, DatabaseModel @new)
         {
+            if ( old.Tables == null || old.Tables.Count() == 0 ) return  new TableModification[] {};
+            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return new TableModification[] {};
+            
             var coexistingTables = old.Tables.Select(t => new
             {
                 Old = t,
@@ -133,6 +139,8 @@ namespace DatabaseTools
         }
         private static IList<Table> getRemovedTables(DatabaseModel old, DatabaseModel @new)
         {
+            if ( old.Tables == null || old.Tables.Count() == 0 ) return new Table[] {};
+            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return @new.Tables;
 
             return @new.Tables
                 .Where(t => !old.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
