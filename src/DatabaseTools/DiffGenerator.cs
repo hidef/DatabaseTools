@@ -66,7 +66,7 @@ namespace DatabaseTools
                         ChangedColumns = ChangedColumns(t.Old, t.New),
                         RemovedColumns = RemovedColumns(t.Old, t.New),
                         AddedIndices = AddedIndices(t.Old, t.New),
-                        // TODO: ChangedIndices = ChangedIndices(t.Old, t.New),
+                        ChangedIndices = ChangeIndices(t.Old, t.New),
                         RemovedIndices = RemovedIndices(t.Old, t.New)
                     };
                 })
@@ -74,6 +74,20 @@ namespace DatabaseTools
                 .ToList();
         }
 
+        public static IList<IndexModification> ChangeIndices(Table old, Table @new)
+        {
+            var _in = old.Indices
+                .Where(i => i != null)
+                .ToList();
+            var _out = @new.Indices
+                .Where(i => i != null)
+                .ToList(); 
+
+            return _in
+                .Join(_out, i => i.Name, i => i.Name, (a, b) => new IndexModification(a, b))
+                .Where(iMod => !IndexModification.Equals(iMod.A, iMod.B))
+                .ToList();
+        }
 
         public static IList<ColumnModification> ChangedColumns(Table old, Table @new)
         {

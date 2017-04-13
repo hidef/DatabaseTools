@@ -16,7 +16,7 @@ namespace DatabaseTools.Model
         public bool IsPrimaryKeyChanged {  get; set; }
 
         public IList<Index> AddedIndices  {  get; set; }
-        public IList<IndexModification> ChangeIndices  {  get; set; }
+        public IList<IndexModification> ChangedIndices  {  get; set; }
         public IList<Index> RemovedIndices  {  get; set; }
 
         public IList<Field> AddedColumns {  get; set; }

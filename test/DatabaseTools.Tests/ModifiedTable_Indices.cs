@@ -64,5 +64,42 @@ namespace DatabaseTools.Tests
             Assert.Equal("UserId", diff.ModifiedTables.Single().RemovedIndices.Single().Fields.Single());
             Assert.Equal(true, diff.ModifiedTables.Single().RemovedIndices.Single().IsUnique);
         }
+
+
+        [Fact]
+        public void ChangeIndices() 
+        {
+
+            var old = new Table {
+                Name = "a new table",
+                Indices = new [] {
+                    new Index {
+                        Name = "IX_UserId",
+                        Fields = new [] { "UserId" },
+                        IsUnique = true
+                    }
+                }
+            };
+
+            var @new = new Table {
+                Name = "a new table",
+                Indices = new [] {
+                    new Index {
+                        Name = "IX_UserId",
+                        Fields = new [] { "GroupId", "UserId" },
+                        IsUnique = false
+                    }
+                },
+                Fields = new [] { new Field { } }
+            };
+
+            var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
+
+            Assert.Equal(1, diff.ModifiedTables.Count);
+            Assert.Equal(true, diff.ModifiedTables.Single().IsModified);
+            Assert.Equal(1, diff.ModifiedTables.Single().ChangedIndices.Count());
+            Assert.Equal(old.Indices.Single(), diff.ModifiedTables.Single().ChangedIndices.Single().A);
+            Assert.Equal(@new.Indices.Single(), diff.ModifiedTables.Single().ChangedIndices.Single().B);
+        }
     }
 }
