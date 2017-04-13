@@ -37,8 +37,10 @@ namespace DatabaseTools
 
             Console.WriteLine(diffScript);
             
-            // destination.Apply(diff);
-
+            if ( bool.Parse(configuration["apply"] ?? bool.FalseString ) )
+            {
+                output.Apply(diff);
+            }
         }
 
         private static string discoverDatabase()
