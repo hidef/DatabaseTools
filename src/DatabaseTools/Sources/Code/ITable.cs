@@ -1,4 +1,4 @@
-namespace DatabaseTools.Model
+namespace DatabaseTools.Sources.Code
 {
     public interface ITable<T>
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DatabaseTools.Model
+namespace DatabaseTools
 {
     public static class extensions
     {
