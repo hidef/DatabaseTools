@@ -28,6 +28,16 @@ namespace DatabaseTools
                 .ToList();
         }
 
+        private static IList<Table> getRemovedTables(DatabaseModel old, DatabaseModel @new)
+        {
+            if ( old.Tables == null || old.Tables.Count() == 0 ) return new Table[] {};
+            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return @old.Tables;
+
+            return @new.Tables
+                .Where(t => !old.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
         private static IList<TableModification> getModifiedTables(DatabaseModel old, DatabaseModel @new)
         {
             if ( old.Tables == null || old.Tables.Count() == 0 ) return  new TableModification[] {};
@@ -136,15 +146,6 @@ namespace DatabaseTools
         public static bool IsPrimaryKeyChanged(Table old, Table @new, bool isPrimaryKeyAdded, bool isPrimaryKeyRemoved)
         {
             return !isPrimaryKeyAdded && !isPrimaryKeyRemoved && !old.PrimaryKey.EqualTo(@new.PrimaryKey);
-        }
-        private static IList<Table> getRemovedTables(DatabaseModel old, DatabaseModel @new)
-        {
-            if ( old.Tables == null || old.Tables.Count() == 0 ) return new Table[] {};
-            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return @new.Tables;
-
-            return @new.Tables
-                .Where(t => !old.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
         }
     }
 }
