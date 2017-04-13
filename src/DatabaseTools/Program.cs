@@ -26,14 +26,14 @@ namespace DatabaseTools
 
             var configuration = builder.Build();
 
-            IDb source = GetSource(configuration["from"]);
-            IDb destination = GetSource(configuration["to"]);
+            IDb input = GetSource(configuration["from"]);
+            IDb output = GetSource(configuration["to"]);
             
-            DbDiff diff = new DiffGenerator().Diff(source.GetModel(), destination.GetModel());
+            DbDiff diff = new DiffGenerator().Diff(output.GetModel(), input.GetModel());
 
             Console.WriteLine(JsonConvert.SerializeObject(diff, Formatting.Indented));
  
-            string diffScript = destination.GenerateScript(diff);
+            string diffScript = output.GenerateScript(diff);
 
             Console.WriteLine(diffScript);
             
@@ -43,8 +43,8 @@ namespace DatabaseTools
 
         private static string discoverDatabase()
         {
-            var projectName = new DirectoryInfo("/Users/robert.stiff/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
-            string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.0", projectName.Name + ".dll");
+            var projectName = new DirectoryInfo("/Users/uatec/Development/projectorgames/tacticsforeverapiv2/src/TacticsForeverAPI/");
+            string path = Path.Combine(projectName.FullName, "bin", "Debug", "netcoreapp1.1", projectName.Name + ".dll");
             
             var assemblyName = new FileInfo(path);
 

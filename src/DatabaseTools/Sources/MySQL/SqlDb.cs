@@ -34,12 +34,11 @@ namespace DatabaseTools.Sources.MySQL
                     .Query("SHOW TABLES;")
                     .Select(t => 
                         {
-                            string tableName = t[$"Tables_in_{databaseName}"];
+                            string tableName = ((IDictionary<string, object>) t)[$"Tables_in_{databaseName}"].ToString();
                             var table = new Table {
                                 Name = tableName,
                                 Fields = getFields(tableName),
                             };
-                            // table.Indices = getIndices(tableName)
                             return table;
                         })
                     .ToList();
