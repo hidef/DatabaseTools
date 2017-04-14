@@ -7,8 +7,10 @@ namespace DatabaseTools
     {
         public static IList<Tuple<string, string>> MySqlMappings = new [] {
             Tuple.Create("BOOL NOT NULL","bool"),
-            Tuple.Create("BOOL NULL","bool?	"),
+            Tuple.Create("BOOL NULL","bool?"),
+            Tuple.Create("BOOL NULL","boolean?"),
             Tuple.Create("BOOL","bool"),
+            Tuple.Create("BOOL","boolean"),
             Tuple.Create("TINYINT NOT NULL","sbyte"),
             Tuple.Create("TINYINT NULL","sbyte?"),
             Tuple.Create("TINYINT","sbyte"),
