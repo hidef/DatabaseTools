@@ -14,5 +14,6 @@ namespace DatabaseTools.Model
             set { _indices = value; }
         }
         public IList<Field> Fields { get; set; }
+        public IList<ForeignKey> ForeignKeys { get; set; }
     }
 }

@@ -24,8 +24,8 @@ namespace DatabaseTools.Tests.CSharp
             // [Index("IX_Name")]
             public string Name { get; set; }
 
-            // [ForeignKey(typeof(Nation), nameof(Nation.Id))]
-            public string Nationality { get; set; } 
+            [ForeignKey(nameof(Nation.Id))]
+            public Nation Nationality { get; set; } 
         }
 
         class MyDatabase
@@ -51,9 +51,9 @@ namespace DatabaseTools.Tests.CSharp
                         // Indices = new [] {
                         //     new Index { Name = "IX_Name", Fields = new [] { "Name" }
                         // },
-                        // ForeignKeys = new [] {
-                        //     new ForeignKey { Name = "FK_Nationality_Nation_Id", LocalColumn = "Nationality", RemoteTable = "Nation", RemoteColumn = "Id" }
-                        // }
+                        ForeignKeys = new [] {
+                            new ForeignKey { Name = "FK_Nationality_Nation_Id", LocalColumn = "Nationality", RemoteTable = "Nation", RemoteColumn = "Id" }
+                        }
                     },
                     new Table {
                         Name = "Nation",
