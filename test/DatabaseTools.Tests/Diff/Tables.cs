@@ -4,7 +4,7 @@ using Xunit;
 
 namespace DatabaseTools.Tests.Diff
 {
-    public class AddRemoveTables
+    public class Tables
     {
         [Fact]
         public void Add()
@@ -73,6 +73,32 @@ namespace DatabaseTools.Tests.Diff
 
             Assert.Equal("MyNewTable", diff.AddedTables.Single().Name);
             Assert.Equal("MyOldTable", diff.RemovedTables.Single().Name);
+        }
+
+        [Fact]
+        public void NothingChanged()
+        {
+            var input = new DatabaseModel {
+                Tables = new [] {
+                    new Table {
+                        Name = "ATable"
+                    }
+                }
+            };
+
+            var output = new DatabaseModel {
+                Tables = new Table[] {
+                    new Table {
+                        Name = "ATable"
+                    }
+                }
+            };
+
+            var diff = new DiffGenerator().Diff(input, output);
+
+            Assert.Equal(0, diff.AddedTables.Count());
+            Assert.Equal(0, diff.ModifiedTables.Count());
+            Assert.Equal(0, diff.RemovedTables.Count());
         }
     }
 }

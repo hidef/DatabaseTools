@@ -14,7 +14,11 @@ namespace DatabaseTools
             return new DbDiff
             {
                 AddedTables = joinedTables.Where(t => t.Item2 == null).Select(t => t.Item1).ToList(),
-                ModifiedTables = joinedTables.Where(t => t.Item1 != null && t.Item2 != null).Select(t => diffTable(t.Item1, t.Item2)).ToList(),
+                ModifiedTables = joinedTables
+                    .Where(t => t.Item1 != null && t.Item2 != null)
+                    .Select(t => diffTable(t.Item1, t.Item2))
+                    .Where(tm => tm.IsModified)
+                    .ToList(),
                 RemovedTables = joinedTables.Where(t => t.Item1 == null).Select(t => t.Item2).ToList(),
             };
         }
@@ -78,6 +82,7 @@ namespace DatabaseTools
 
         public static IList<Field> AddedColumns(Table old, Table @new)
         {
+            if ( old.Fields == null && @new.Fields == null ) return new Field[] {};
             if ( old.Fields == null || old.Fields.Count == 0 ) return @new.Fields;
             if ( @new.Fields == null || @new.Fields.Count == 0 ) return new Field[] {};
 
@@ -92,6 +97,7 @@ namespace DatabaseTools
 
         public static IList<Field> RemovedColumns(Table old, Table @new)
         {
+            if ( old.Fields == null && @new.Fields == null ) return new Field[] {};
             if ( old.Fields == null || old.Fields.Count == 0 ) return new Field[] {};
             if ( @new.Fields == null || @new.Fields.Count == 0 ) return old.Fields;
 
