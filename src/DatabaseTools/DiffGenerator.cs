@@ -9,69 +9,35 @@ namespace DatabaseTools
     {
         public DbDiff Diff(DatabaseModel old, DatabaseModel @new)
         {
+            var joinedTables = old.Tables.FullOuterJoin(@new.Tables, t => t.Name, t => t.Name, Tuple.Create);
+
             return new DbDiff
             {
-                AddedTables = getAddedTables(old, @new),
-                ModifiedTables = getModifiedTables(old, @new),
-                RemovedTables = getRemovedTables(old, @new),
+                AddedTables = joinedTables.Where(t => t.Item2 == null).Select(t => t.Item1).ToList(),
+                ModifiedTables = joinedTables.Where(t => t.Item1 != null && t.Item2 != null).Select(t => diffTable(t.Item1, t.Item2)).ToList(),
+                RemovedTables = joinedTables.Where(t => t.Item1 == null).Select(t => t.Item2).ToList(),
             };
         }
 
-
-        private static IList<Table> getAddedTables(DatabaseModel old, DatabaseModel @new)
+        private static TableModification diffTable(Table input, Table output)
+        
         {
-            if ( old.Tables == null || old.Tables.Count() == 0 ) return @new.Tables;
-            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return new Table[] {};
-
-            return old.Tables
-                .Where(t => !@new.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-        }
-
-        private static IList<Table> getRemovedTables(DatabaseModel old, DatabaseModel @new)
-        {
-            if ( old.Tables == null || old.Tables.Count() == 0 ) return new Table[] {};
-            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return @old.Tables;
-
-            return @new.Tables
-                .Where(t => !old.Tables.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-        }
-
-        private static IList<TableModification> getModifiedTables(DatabaseModel old, DatabaseModel @new)
-        {
-            if ( old.Tables == null || old.Tables.Count() == 0 ) return  new TableModification[] {};
-            if ( @new.Tables == null || @new.Tables.Count() == 0 ) return new TableModification[] {};
-            
-            var coexistingTables = old.Tables.Select(t => new
+            var isPrimaryKeyAdded = IsPrimaryKeyAdded(input, output);
+            var isPrimaryKeyRemoved = IsPrimaryKeyRemoved(input, output);
+            return new TableModification
             {
-                Old = t,
-                New = @new.Tables.SingleOrDefault(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase))
-            })
-            .Where(p => p.New != null);
-
-            return coexistingTables
-                .Select(t =>
-                {
-                    var isPrimaryKeyAdded = IsPrimaryKeyAdded(t.Old, t.New);
-                    var isPrimaryKeyRemoved = IsPrimaryKeyRemoved(t.Old, t.New);
-                    return new TableModification
-                    {
-                        Old = t.Old,
-                        New = t.New,
-                        IsPrimaryKeyAdded = isPrimaryKeyAdded,
-                        IsPrimaryKeyChanged = IsPrimaryKeyChanged(t.Old, t.New, isPrimaryKeyAdded, isPrimaryKeyRemoved),
-                        IsPrimaryKeyRemoved = isPrimaryKeyRemoved,
-                        AddedColumns = AddedColumns(t.Old, t.New),
-                        ChangedColumns = ChangedColumns(t.Old, t.New),
-                        RemovedColumns = RemovedColumns(t.Old, t.New),
-                        AddedIndices = AddedIndices(t.Old, t.New),
-                        ChangedIndices = ChangeIndices(t.Old, t.New),
-                        RemovedIndices = RemovedIndices(t.Old, t.New)
-                    };
-                })
-                .Where(tm => tm.IsModified)
-                .ToList();
+                Old = input,
+                New = output,
+                IsPrimaryKeyAdded = isPrimaryKeyAdded,
+                IsPrimaryKeyChanged = IsPrimaryKeyChanged(input, output, isPrimaryKeyAdded, isPrimaryKeyRemoved),
+                IsPrimaryKeyRemoved = isPrimaryKeyRemoved,
+                AddedColumns = AddedColumns(input, output),
+                ChangedColumns = ChangedColumns(input, output),
+                RemovedColumns = RemovedColumns(input, output),
+                AddedIndices = AddedIndices(input, output),
+                ChangedIndices = ChangeIndices(input, output),
+                RemovedIndices = RemovedIndices(input, output)
+            };
         }
 
         public static IList<IndexModification> ChangeIndices(Table old, Table @new)
