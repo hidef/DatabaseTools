@@ -31,7 +31,7 @@ namespace DatabaseTools
             return new TableModification
             {
                 Input = input,
-                New = output,
+                Output = output,
                 IsPrimaryKeyAdded = isPrimaryKeyAdded,
                 IsPrimaryKeyChanged = IsPrimaryKeyChanged(input, output, isPrimaryKeyAdded, isPrimaryKeyRemoved),
                 IsPrimaryKeyRemoved = isPrimaryKeyRemoved,

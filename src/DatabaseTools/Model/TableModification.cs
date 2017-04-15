@@ -9,7 +9,7 @@ namespace DatabaseTools.Model
         public string Name => this.Input.Name;
 
         public Table Input { get; set; }
-        public Table New { get; set; }
+        public Table Output { get; set; }
 
         public bool IsPrimaryKeyAdded { get; set; }
         public bool IsPrimaryKeyRemoved { get; set; }

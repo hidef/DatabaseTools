@@ -147,12 +147,12 @@ namespace DatabaseTools.Sources.MySQL
 
                 if ( mod.IsPrimaryKeyAdded ) 
                 {
-                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD PRIMARY KEY ({mod.New.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD PRIMARY KEY ({mod.Input.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
                 }
 
                 if ( mod.IsPrimaryKeyChanged ) 
                 {
-                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY, ADD PRIMARY KEY ({mod.New.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY, ADD PRIMARY KEY ({mod.Input.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
                 }
 
                 if ( mod.IsPrimaryKeyRemoved ) 
