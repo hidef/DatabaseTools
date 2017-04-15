@@ -9,7 +9,7 @@ namespace DatabaseTools
     {
         public DbDiff Diff(DatabaseModel old, DatabaseModel @new)
         {
-            var joinedTables = old.Tables.FullOuterJoin(@new.Tables, t => t.Name, t => t.Name, Tuple.Create);
+            var joinedTables = old.Tables.FullOuterJoin(@new.Tables, t => t.Name, t => t.Name, Tuple.Create, null, null, StringComparer.OrdinalIgnoreCase);
 
             return new DbDiff
             {

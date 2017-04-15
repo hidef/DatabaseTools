@@ -100,5 +100,31 @@ namespace DatabaseTools.Tests.Diff
             Assert.Equal(0, diff.ModifiedTables.Count());
             Assert.Equal(0, diff.RemovedTables.Count());
         }
+        
+        [Fact]
+        public void TableNamesAreCaseInsensitive()
+        {
+            var input = new DatabaseModel {
+                Tables = new [] {
+                    new Table {
+                        Name = "sometable"
+                    }
+                }
+            };
+
+            var output = new DatabaseModel {
+                Tables = new Table[] {
+                    new Table {
+                        Name = "SomeTable"
+                    }
+                }
+            };
+
+            var diff = new DiffGenerator().Diff(input, output);
+
+            Assert.Equal(0, diff.AddedTables.Count());
+            Assert.Equal(0, diff.ModifiedTables.Count());
+            Assert.Equal(0, diff.RemovedTables.Count());
+        }
     }
 }
