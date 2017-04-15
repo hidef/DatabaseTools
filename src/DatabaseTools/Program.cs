@@ -29,7 +29,7 @@ namespace DatabaseTools
             IDb input = GetSource(configuration["from"]);
             IDb output = GetSource(configuration["to"]);
             
-            DbDiff diff = new DiffGenerator().Diff(output.GetModel(), input.GetModel());
+            DbDiff diff = new DiffGenerator().Diff(input.GetModel(),output.GetModel());
 
             Console.WriteLine(JsonConvert.SerializeObject(diff, Formatting.Indented));
  

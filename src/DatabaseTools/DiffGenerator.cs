@@ -133,12 +133,12 @@ namespace DatabaseTools
 
         public static bool IsPrimaryKeyAdded(Table input, Table output)
         {
-            return (input.PrimaryKey == null || input.PrimaryKey.Count() == 0) && (output.PrimaryKey != null && output.PrimaryKey.Count() > 0);
+            return (output.PrimaryKey == null || output.PrimaryKey.Count() == 0) && (input.PrimaryKey != null && input.PrimaryKey.Count() > 0);
         }
 
         public static bool IsPrimaryKeyRemoved(Table input, Table output)
         {
-            return (output.PrimaryKey == null || output.PrimaryKey.Count() == 0) && (input.PrimaryKey != null && input.PrimaryKey.Count() > 0);
+            return (input.PrimaryKey == null || input.PrimaryKey.Count() == 0) && (output.PrimaryKey != null && output.PrimaryKey.Count() > 0);
         }
 
         public static bool IsPrimaryKeyChanged(Table old, Table @new, bool isPrimaryKeyAdded, bool isPrimaryKeyRemoved)

@@ -23,9 +23,9 @@ namespace DatabaseTools.Tests.Diff
 
             Assert.Equal(1, diff.ModifiedTables.Count);
             Assert.True(diff.ModifiedTables.Single().IsModified);
-            Assert.True(diff.ModifiedTables.Single().IsPrimaryKeyAdded);
+            Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyAdded);
             Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyChanged);
-            Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyRemoved);
+            Assert.True(diff.ModifiedTables.Single().IsPrimaryKeyRemoved);
         }
 
         [Fact]
@@ -73,22 +73,22 @@ namespace DatabaseTools.Tests.Diff
         [Fact]
         public void RemovedPrimaryKey()
         {
-            var old = new Table {
+            var input = new Table {
                 Name = "a new table",
                 PrimaryKey = new [] { "UserId" }
             };
 
-            var @new = new Table {
+            var output = new Table {
                 Name = "a new table",
             };
 
-            var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
+            var diff = new DiffGenerator().Diff(input.InDbModel(), output.InDbModel());
 
             Assert.Equal(1, diff.ModifiedTables.Count);
             Assert.True(diff.ModifiedTables.Single().IsModified);
-            Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyAdded);
+            Assert.True(diff.ModifiedTables.Single().IsPrimaryKeyAdded);
             Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyChanged);
-            Assert.True(diff.ModifiedTables.Single().IsPrimaryKeyRemoved);
+            Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyRemoved);
         }
     }
 }
