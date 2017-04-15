@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using DatabaseTools.Model;
 using Xunit;
@@ -47,6 +48,26 @@ namespace DatabaseTools.Tests.Diff
             Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyAdded);
             Assert.True(diff.ModifiedTables.Single().IsPrimaryKeyChanged);
             Assert.False(diff.ModifiedTables.Single().IsPrimaryKeyRemoved);
+        }
+        
+        [Fact]
+        public void UnChangedPrimaryKey()
+        {
+            int i = DateTime.Now.Day;
+
+            var old = new Table {
+                Name = "a new table",
+                PrimaryKey = new [] { "UserId" + i } // Force this string to be a different instance despite having the same value
+            };
+
+            var @new = new Table {
+                Name = "a new table",
+                PrimaryKey = new [] { "UserId" + i } // Force this string to be a different instance despite having the same value
+            };
+
+            var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
+
+            Assert.Equal(0, diff.ModifiedTables.Count);
         }
 
         [Fact]

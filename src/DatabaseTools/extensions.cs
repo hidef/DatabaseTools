@@ -16,7 +16,7 @@ namespace DatabaseTools
             int count = self.Count();
             for ( int i = 0; i < count; i++ )
             {
-                if ( self[i] != other[i] ) return false;
+                if ( !object.Equals(self[i], other[i]) ) return false;
             }
 
             return true;
