@@ -30,7 +30,7 @@ namespace DatabaseTools
             var isPrimaryKeyRemoved = IsPrimaryKeyRemoved(input, output);
             return new TableModification
             {
-                Old = input,
+                Input = input,
                 New = output,
                 IsPrimaryKeyAdded = isPrimaryKeyAdded,
                 IsPrimaryKeyChanged = IsPrimaryKeyChanged(input, output, isPrimaryKeyAdded, isPrimaryKeyRemoved),

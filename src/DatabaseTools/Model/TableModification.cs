@@ -6,9 +6,9 @@ namespace DatabaseTools.Model
     public class TableModification
     {
         
-        public string Name => this.Old.Name;
+        public string Name => this.Input.Name;
 
-        public Table Old { get; set; }
+        public Table Input { get; set; }
         public Table New { get; set; }
 
         public bool IsPrimaryKeyAdded { get; set; }
