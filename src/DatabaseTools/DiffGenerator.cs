@@ -83,30 +83,30 @@ namespace DatabaseTools
         public static IList<Field> AddedColumns(Table old, Table @new)
         {
             if ( old.Fields == null && @new.Fields == null ) return new Field[] {};
-            if ( old.Fields == null || old.Fields.Count == 0 ) return @new.Fields;
-            if ( @new.Fields == null || @new.Fields.Count == 0 ) return new Field[] {};
-
-            var _in = old.Fields;
-            var _out = @new.Fields;
-
-            return _out
-                .Where(t => !t.Ignored)
-                .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-        }
-
-        public static IList<Field> RemovedColumns(Table old, Table @new)
-        {
-            if ( old.Fields == null && @new.Fields == null ) return new Field[] {};
             if ( old.Fields == null || old.Fields.Count == 0 ) return new Field[] {};
             if ( @new.Fields == null || @new.Fields.Count == 0 ) return old.Fields;
 
             var _in = old.Fields;
             var _out = @new.Fields;
 
-            return _in
+            return _out
                 .Where(t => !t.Ignored)
                 .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+        public static IList<Field> RemovedColumns(Table old, Table @new)
+        {
+            if ( old.Fields == null && @new.Fields == null ) return new Field[] {};
+            if ( old.Fields == null || old.Fields.Count == 0 ) return @new.Fields;
+            if ( @new.Fields == null || @new.Fields.Count == 0 ) return new Field[] {};
+
+            var _in = old.Fields;
+            var _out = @new.Fields;
+
+            return _in
+                .Where(t => !t.Ignored)
+                .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
 

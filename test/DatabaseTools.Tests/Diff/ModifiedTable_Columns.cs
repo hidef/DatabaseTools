@@ -11,16 +11,16 @@ namespace DatabaseTools.Tests.Diff
         {
             var old = new Table {
                 Name = "a new table",
-            };
-
-            var @new = new Table {
-                Name = "a new table",
                 Fields = new [] {
                     new Field {
                         Name = "UserId",
                         Type = "int"
                     }
                 }
+            };
+
+            var @new = new Table {
+                Name = "a new table",
             };
 
             var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
@@ -37,16 +37,16 @@ namespace DatabaseTools.Tests.Diff
         {
             var old = new Table {
                 Name = "a new table",
+            };
+
+            var @new = new Table {
+                Name = "a new table",
                 Fields = new [] {
                     new Field {
                         Name = "UserId",
                         Type = "int"
                     }
                 }
-            };
-
-            var @new = new Table {
-                Name = "a new table",
             };
 
             var diff = new DiffGenerator().Diff(old.InDbModel(), @new.InDbModel());
