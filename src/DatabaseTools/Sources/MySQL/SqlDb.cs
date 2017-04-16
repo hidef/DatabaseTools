@@ -38,11 +38,20 @@ namespace DatabaseTools.Sources.MySQL
                             var table = new Table {
                                 Name = tableName,
                                 Fields = getFields(tableName),
+                                PrimaryKey = getPrimaryKey(tableName)
                             };
                             return table;
                         })
                     .ToList();
             }
+        }
+
+        
+        private string[] getPrimaryKey(string tableName)
+        {
+            return _connection.Query($"show KEYS FROM {tableName} WHERE Key_name = 'PRIMARY'")
+                .Select(s => (string) s.Column_name)
+                .ToArray();
         }
 
         // private IList<string> getIndices(string tableName)
