@@ -82,6 +82,7 @@ namespace DatabaseTools.Sources.MySQL
 
         private string findType(string type)
         {
+            type = type.Contains('(') ? type.Substring(0, type.IndexOf('(')) : type;
             var matchedMapping = TypeMappings.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
 
             if ( matchedMapping == null ) 
@@ -93,6 +94,7 @@ namespace DatabaseTools.Sources.MySQL
 
         private static string getDbType(string str)
         {
+            str = str.Contains('(') ? str.Substring(0, str.IndexOf('(')) : str;
             var matchedMapping = TypeMappings.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item2, str, StringComparison.OrdinalIgnoreCase));
 
             if ( matchedMapping == null ) 
