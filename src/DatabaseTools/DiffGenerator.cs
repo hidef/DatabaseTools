@@ -28,7 +28,7 @@ namespace DatabaseTools
         {
             var isPrimaryKeyAdded = IsPrimaryKeyAdded(input, output);
             var isPrimaryKeyRemoved = IsPrimaryKeyRemoved(input, output);
-            return new TableModification
+            var tableMod = new TableModification
             {
                 Input = input,
                 Output = output,
@@ -42,6 +42,7 @@ namespace DatabaseTools
                 ChangedIndices = ChangeIndices(input, output),
                 RemovedIndices = RemovedIndices(input, output)
             };
+            return tableMod;
         }
 
         public static IList<IndexModification> ChangeIndices(Table old, Table @new)
@@ -89,7 +90,7 @@ namespace DatabaseTools
             var _in = old.Fields;
             var _out = @new.Fields;
 
-            return _out
+            return _in
                 .Where(t => !t.Ignored)
                 .Where(t => !_out.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
@@ -104,7 +105,7 @@ namespace DatabaseTools
             var _in = old.Fields;
             var _out = @new.Fields;
 
-            return _in
+            return _out
                 .Where(t => !t.Ignored)
                 .Where(t => !_in.Any(t2 => String.Equals(t2.Name, t.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();

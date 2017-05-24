@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Version>1.0.66.0</Version>
     <TargetFrameworks>netcoreapp1.0;netcoreapp1.1</TargetFrameworks>
     <AssemblyName>dotnet-dbmodel</AssemblyName>
     <OutputType>Exe</OutputType>

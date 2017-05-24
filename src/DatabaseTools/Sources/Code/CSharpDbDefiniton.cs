@@ -43,7 +43,7 @@ namespace DatabaseTools.Sources.Code
                                 .Select(p => {
                                     var f = new Field {
                                         Name = p.Name,
-                                        Type = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ? null : findType(p.PropertyType.Name),
+                                        Type = findType(p),
                                         Ignored = p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute)
                                     };
 
@@ -95,11 +95,21 @@ namespace DatabaseTools.Sources.Code
             return fk;
         }
 
-        private string findType(string type)
+        private string findType(PropertyInfo p)
         {
-            var matchedMapping = TypeMappings.CSharpMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
+            if ( p.GetCustomAttributes().Any(a => a is DbIgnoreAttribute) ) return null;
+            
+            string typeString = p.PropertyType.Name;
+            bool isNullable = false;
+            if ( typeString == "Nullable`1" ) 
+            {
+                isNullable = true;
+                typeString = p.PropertyType.GenericTypeArguments.Single().Name;
+            }
+            
+            var matchedMapping = TypeMappings.CSharpMappings.FirstOrDefault(m => string.Equals(m.Item1, typeString, StringComparison.OrdinalIgnoreCase));
 
-            return matchedMapping?.Item2;
+            return matchedMapping?.Item2 + ( isNullable ? "?" : "");
         }
 
         public void Apply(DbDiff diff)
