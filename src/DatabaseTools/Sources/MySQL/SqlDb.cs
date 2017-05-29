@@ -101,7 +101,14 @@ namespace DatabaseTools.Sources.MySQL
             {
                 throw new Exception();
             }
-            return matchedMapping.Item1;
+            string type = matchedMapping.Item1;
+            switch ( type )
+            {
+                case "VARCHAR":
+                    type += "(255)"; 
+                    break;      
+            }
+            return type;
         }
         public void Apply(DbDiff diff)
         {
