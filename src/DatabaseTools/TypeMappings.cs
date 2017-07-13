@@ -91,6 +91,8 @@ namespace DatabaseTools
         };
 
         public static IList<Tuple<string, string>> PostGresMappings = new [] {
+            Tuple.Create("character varying","String"),
+            Tuple.Create("integer","Int"),
             Tuple.Create("int8","Int64"),
             Tuple.Create("int8","Long"),
             Tuple.Create("bool","Boolean"),

@@ -5,34 +5,28 @@ using Xunit;
 
 namespace DatabaseTools.Tests.CSharp
 {
+    [PrimaryKey(nameof(Nation.Id))]
+    public class Nation
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    [PrimaryKey(nameof(User.GroupId), nameof(User.UserId))]
+    public class User
+    {
+        public int GroupId { get; set; }
+        public string UserId { get; set; }
+        
+        // [Index("IX_Name")]
+        public string Name { get; set; }
+
+        // [ForeignKey(nameof(Nation.Id))]
+        public string Nationality { get; set; } 
+    }
     public class CSharpReader
     {
         
-        [PrimaryKey(nameof(Nation.Id))]
-        class Nation
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-        }
-
-        [PrimaryKey(nameof(User.GroupId), nameof(User.UserId))]
-        class User
-        {
-            public int GroupId { get; set; }
-            public string UserId { get; set; }
-            
-            // [Index("IX_Name")]
-            public string Name { get; set; }
-
-            // [ForeignKey(nameof(Nation.Id))]
-            public string Nationality { get; set; } 
-        }
-
-        class MyDatabase
-        {
-            public ITable<User> User { get; set; }
-            public ITable<Nation> Nation { get; set; }
-        }
 
         [Fact]
         public void ReadTable()
@@ -66,7 +60,7 @@ namespace DatabaseTools.Tests.CSharp
                 }
             };
 
-            var generatedModel = new CSharpDbDefiniton(typeof(MyDatabase)).GetModel();
+            var generatedModel = new CSharpDbDefiniton(typeof(Database)).GetModel();
             
             Assert.Equal(
                 JsonConvert.SerializeObject(expectedModel, Formatting.Indented), 

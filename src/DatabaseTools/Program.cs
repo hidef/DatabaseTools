@@ -7,6 +7,7 @@ using System.Runtime.Loader;
 using DatabaseTools.Model;
 using DatabaseTools.Sources.Code;
 using DatabaseTools.Sources.MySQL;
+using DatabaseTools.Sources.PostgreSQL;
 
 namespace DatabaseTools
 {
@@ -57,7 +58,7 @@ namespace DatabaseTools
 
             var myAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyName.FullName);
 
-            return myAssembly.GetType($"{myAssembly.FullName.Split(',')[0]}.Database").AssemblyQualifiedName;
+            return myAssembly.GetType($"{myAssembly.GetName().Name}.Database").AssemblyQualifiedName;
         }
 
         private static IDb GetSource(string connectionString)
@@ -70,7 +71,14 @@ namespace DatabaseTools
             
             if ( type != null ) return new CSharpDbDefiniton(type);
 
-            return new SqlDb(new Uri(connectionString));
+            Uri connectionUri = new Uri(connectionString);
+
+            return registrations[connectionUri.Scheme](connectionUri);
         }
+
+        static Dictionary<string, Func<Uri, IDb>> registrations = new Dictionary<string, Func<Uri, IDb>> {
+            {"mysql", uri => new MySqlDb(uri)},
+            {"postgresql", uri => new PostgreSqlDb(uri)},
+        };
     }
 }

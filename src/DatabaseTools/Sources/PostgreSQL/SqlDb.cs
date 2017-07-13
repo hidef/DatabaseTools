@@ -6,24 +6,25 @@ using System;
 using System.Text;
 using DatabaseTools.Model;
 
-namespace DatabaseTools.Sources.MySQL
+namespace DatabaseTools.Sources.PostgreSQL
 {
-    internal class SqlDb : IDb
+    internal class PostgreSqlDb : IDb
     {
         private string connectionString;
         IDbConnection _connection;
 
-        public SqlDb(Uri uri)
+        public PostgreSqlDb(Uri uri)
         {
-            var connectionStringBuilder = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder();
-            connectionStringBuilder.Server = uri.Host;
-            connectionStringBuilder.Port = (uint) (uri.Port == -1 ? 3306 : uri.Port);
-            connectionStringBuilder.Database = uri.LocalPath.TrimStart('/');
-            connectionStringBuilder.UserID = uri.UserInfo.Split(':')[0];
-            connectionStringBuilder.Password = uri.UserInfo.Split(':')[1];
-            this.connectionString = connectionStringBuilder.GetConnectionString(true);
             
-            _connection = new MySql.Data.MySqlClient.MySqlConnection(this.connectionString);
+            var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder();
+            connectionStringBuilder.Host = uri.Host;
+            connectionStringBuilder.Port = uri.Port == -1 ? 5432 : uri.Port;
+            connectionStringBuilder.Database = uri.LocalPath.TrimStart('/');
+            connectionStringBuilder.Username = uri.UserInfo.Split(':')[0];
+            connectionStringBuilder.Password = uri.UserInfo.Split(':')[1];
+            this.connectionString = connectionStringBuilder.ToString();
+            
+            _connection = new Npgsql.NpgsqlConnection(this.connectionString);
             _connection.Open();   
         }
 
@@ -31,10 +32,10 @@ namespace DatabaseTools.Sources.MySQL
             get { 
                 string databaseName = _connection.Database;
                 return _connection
-                    .Query("SHOW TABLES;")
+                    .Query("SELECT * FROM information_schema.tables WHERE table_schema = 'public';")
                     .Select(t => 
                         {
-                            string tableName = ((IDictionary<string, object>) t)[$"Tables_in_{databaseName}"].ToString();
+                            string tableName = t.table_name;
                             var table = new Table {
                                 Name = tableName,
                                 Fields = getFields(tableName),
@@ -49,8 +50,22 @@ namespace DatabaseTools.Sources.MySQL
         
         private string[] getPrimaryKey(string tableName)
         {
-            return _connection.Query($"show KEYS FROM {tableName} WHERE Key_name = 'PRIMARY'")
-                .Select(s => (string) s.Column_name)
+            return _connection.Query(@"
+SELECT               
+  pg_attribute.attname, 
+  format_type(pg_attribute.atttypid, pg_attribute.atttypmod) 
+FROM pg_index, pg_class, pg_attribute, pg_namespace 
+WHERE 
+  pg_class.oid = @tableName::regclass AND 
+  indrelid = pg_class.oid AND 
+  nspname = 'public' AND 
+  pg_class.relnamespace = pg_namespace.oid AND 
+  pg_attribute.attrelid = pg_class.oid AND 
+  pg_attribute.attnum = any(pg_index.indkey)
+ AND indisprimary", new {
+                    tableName               
+                })
+                .Select(s => (string) s.attname)
                 .ToArray();
         }
 
@@ -70,12 +85,16 @@ namespace DatabaseTools.Sources.MySQL
         private IList<Field> getFields(string tableName) // TODO: are we succeptible to injection attacks here
         {
             return _connection
-                .Query($"SHOW COLUMNS FROM {tableName}", new {
+                .Query(@"
+SELECT *
+FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name   = @tableName", new {
                     tableName
                 })
                 .Select(t => new Field {
-                    Name = t.Field,
-                    Type = findType(t.Type)
+                    Name = t.column_name,
+                    Type = findType(t.data_type)
                 })
                 .ToList();
         }
@@ -83,7 +102,7 @@ namespace DatabaseTools.Sources.MySQL
         private string findType(string type)
         {
             type = type.Contains('(') ? type.Substring(0, type.IndexOf('(')) : type;
-            var matchedMapping = TypeMappings.MySqlMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
+            var matchedMapping = TypeMappings.PostGresMappings.FirstOrDefault(m => string.Equals(m.Item1, type, StringComparison.OrdinalIgnoreCase));
 
             if ( matchedMapping == null ) 
             {
@@ -141,7 +160,7 @@ namespace DatabaseTools.Sources.MySQL
 
                 if ( table.PrimaryKey != null ) 
                 {
-                    builder.AppendLine($"    PRIMARY KEY ({table.PrimaryKey.Aggregate((a, b) => a + ", " + b)}),");
+                    builder.AppendLine($"    CONSTRAINT pk_{table.Name} PRIMARY KEY ({table.PrimaryKey.Aggregate((a, b) => a + ", " + b)}),");
                 }
 
                 builder.Remove(builder.Length - 2, 1);
@@ -151,16 +170,17 @@ namespace DatabaseTools.Sources.MySQL
 
             foreach (TableModification mod in diff.ModifiedTables )
             {
-                foreach (Field added in mod.AddedColumns){                    
-                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD COLUMN {added.Name} {getDbType(added.Type)};");
+                foreach (Field added in mod.AddedColumns){      
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD COLUMN \"{added.Name}\" {getDbType(added.Type)};");
                 }
                 
                 foreach (ColumnModification colMod in mod.ChangedColumns){
-                    builder.AppendLine($"ALTER TABLE {mod.Name} MODIFY COLUMN {colMod.B.Name} {getDbType(colMod.A.Type)};");
+
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ALTER COLUMN \"{colMod.B.Name}\" TYPE {getDbType(colMod.A.Type)};");
                 }
 
                 foreach (Field removed in mod.RemovedColumns){
-                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP COLUMN {removed.Name};");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP COLUMN \"{removed.Name}\";");
                 }
 
                 if ( mod.IsPrimaryKeyAdded ) 
@@ -170,7 +190,8 @@ namespace DatabaseTools.Sources.MySQL
 
                 if ( mod.IsPrimaryKeyChanged ) 
                 {
-                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY, ADD PRIMARY KEY ({mod.Input.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} DROP PRIMARY KEY;");
+                    builder.AppendLine($"ALTER TABLE {mod.Name} ADD PRIMARY KEY ({mod.Input.PrimaryKey.Aggregate((a, b) => a + ", " + b)});");
                 }
 
                 if ( mod.IsPrimaryKeyRemoved ) 
