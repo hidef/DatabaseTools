@@ -21,9 +21,6 @@ namespace DatabaseTools
                 .AddCommandLine(args)
                 .AddJsonFile("appsettings.json", true)
                 .AddEnvironmentVariables()
-                .AddInMemoryCollection(new Dictionary<string, string> {
-                    { "from", discoverDatabase() }
-                })
                 ;
 
             var configuration = builder.Build();
@@ -69,6 +66,11 @@ namespace DatabaseTools
             Console.WriteLine($"Loading: {connectionString}");
             
             Uri connectionUri = new Uri(connectionString);
+
+            if ( !registrations.ContainsKey(connectionUri.Scheme)) 
+            {
+                return new CSharpDbDefiniton(Type.GetType(discoverDatabase()));
+            }
 
             return registrations[connectionUri.Scheme](connectionString);
         }
