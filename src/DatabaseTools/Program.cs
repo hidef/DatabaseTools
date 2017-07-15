@@ -18,12 +18,13 @@ namespace DatabaseTools
             Console.WriteLine("Discovering Database Changes.");
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
+                .AddCommandLine(args)
+                .AddJsonFile("appsettings.json", true)
                 .AddEnvironmentVariables()
                 .AddInMemoryCollection(new Dictionary<string, string> {
                     { "from", discoverDatabase() }
                 })
-                .AddCommandLine(args)
-                .AddJsonFile("appsettings.json", true);
+                ;
 
             var configuration = builder.Build();
 
@@ -58,7 +59,7 @@ namespace DatabaseTools
 
             var myAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyName.FullName);
 
-            return myAssembly.GetType($"{myAssembly.GetName().Name}.Database").AssemblyQualifiedName;
+            return "type://" + myAssembly.GetType($"{myAssembly.GetName().Name}.Database").AssemblyQualifiedName;
         }
 
         private static IDb GetSource(string connectionString)
@@ -67,10 +68,6 @@ namespace DatabaseTools
 
             Console.WriteLine($"Loading: {connectionString}");
             
-            var type = Type.GetType(connectionString);
-            
-            if ( type != null ) return new CSharpDbDefiniton(type);
-
             Uri connectionUri = new Uri(connectionString);
 
             return registrations[connectionUri.Scheme](connectionString);
@@ -79,7 +76,8 @@ namespace DatabaseTools
         static Dictionary<string, Func<string, IDb>> registrations = new Dictionary<string, Func<string, IDb>> {
             {"mysql", uri => new MySqlDb(new Uri(uri))},
             {"postgresql", uri => new PostgreSqlDb(new Uri(uri))},
-            {"file", path => new RoslynDB(path)}
+            {"file", uri => new RoslynDB(uri)},
+            {"type", uri => new CSharpDbDefiniton(Type.GetType(new Uri(uri).LocalPath))}
         };
     }
 }
