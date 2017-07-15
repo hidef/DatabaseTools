@@ -34,7 +34,7 @@ namespace DatabaseTools.Tests.CSharp
             var expectedModel = new DatabaseModel {
                 Tables = new [] {
                     new Table {
-                        Name = "User",
+                        Name = "MyUser",
                         PrimaryKey = new [] { "GroupId", "UserId" },
                         Fields = new [] {
                             new Field { Name = "GroupId", Type = "int32"},

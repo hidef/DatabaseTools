@@ -73,12 +73,13 @@ namespace DatabaseTools
 
             Uri connectionUri = new Uri(connectionString);
 
-            return registrations[connectionUri.Scheme](connectionUri);
+            return registrations[connectionUri.Scheme](connectionString);
         }
 
-        static Dictionary<string, Func<Uri, IDb>> registrations = new Dictionary<string, Func<Uri, IDb>> {
-            {"mysql", uri => new MySqlDb(uri)},
-            {"postgresql", uri => new PostgreSqlDb(uri)},
+        static Dictionary<string, Func<string, IDb>> registrations = new Dictionary<string, Func<string, IDb>> {
+            {"mysql", uri => new MySqlDb(new Uri(uri))},
+            {"postgresql", uri => new PostgreSqlDb(new Uri(uri))},
+            {"file", path => new RoslynDB(path)}
         };
     }
 }

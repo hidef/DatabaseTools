@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using DatabaseTools.Model;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace DatabaseTools.Sources.Code
 {
